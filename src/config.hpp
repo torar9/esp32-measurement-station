@@ -32,14 +32,14 @@
 #define SD_CS 5
 
 const char* ssid = "Damian";
-const char* passwd = "Ahoj123123";
+const char* passwd = "";
 const char* ntpServer = "0.cz.pool.ntp.org";
 const char* mqttID = "esp32";
 const char* mqttName = "ghost";
-const char* mqttPasswd = "Su352pot";
+const char* mqttPasswd = "";
 const char* mqtt_server = "192.168.0.38";
 const char* hostname = "ESP-32";
-const char* passwdHash = "6886e7ab8fa9e2317a04e2f1067d24fa";
+const char* passwdHash = "";
 const long gmtOffset_sec = 3600;
 const int daylightOffset_sec = 3600;
 
