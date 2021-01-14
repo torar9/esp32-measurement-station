@@ -60,7 +60,7 @@ void loop()
 void callback(char* topic, byte* message, unsigned int length)
 {
   DBG_PRINTLN();
-  Serial.print(F("Callback"));
+  Serial.print(F("Callback function"));
 }
 
 void test()
