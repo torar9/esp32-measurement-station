@@ -7,6 +7,6 @@
 #include <SD.h>
 #include <FS.h>
 
-void prepareSDCard(SDFS &card, uint8_t pin);
+void CardPrepare(SDFS &card, uint8_t pin);
 
 #endif

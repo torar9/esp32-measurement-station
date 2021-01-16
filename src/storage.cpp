@@ -1,6 +1,6 @@
 #include "storage.hpp"
 
-void prepareSDCard(SDFS &card, uint8_t pin)
+void CardPrepare(SDFS &card, uint8_t pin)
 {
     card.begin(pin);
 
