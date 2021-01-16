@@ -6,8 +6,8 @@
 #include <string>
 #include <RTClib.h>
 
-void setupRTCModule(RTC_DS3231 &rtc);
-void setTimeOnline(RTC_DS3231 &rtc, tm &timeStr);
-const char* getRTCString(RTC_DS3231 &rtc);
+void RTCPrepare(RTC_DS3231 &rtc);
+void RTCSetTimeOnline(RTC_DS3231 &rtc, tm &timeStr);
+const char* RTCGetString(RTC_DS3231 &rtc);
 
 #endif

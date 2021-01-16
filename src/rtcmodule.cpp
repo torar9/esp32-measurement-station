@@ -3,7 +3,7 @@
 
 #define BUFFER_SIZE 40
 
-void setupRTCModule(RTC_DS3231 &rtc)
+void RTCPrepare(RTC_DS3231 &rtc)
 {
     if(!rtc.begin())
     {
@@ -12,7 +12,7 @@ void setupRTCModule(RTC_DS3231 &rtc)
     }
 }
 
-void setTimeOnline(RTC_DS3231 &rtc, tm &timeStr)
+void RTCSetTimeOnline(RTC_DS3231 &rtc, tm &timeStr)
 {
     //struct tm timeStr;
 
@@ -23,7 +23,7 @@ void setTimeOnline(RTC_DS3231 &rtc, tm &timeStr)
     rtc.adjust(time);
 }
 
-const char* getRTCString(RTC_DS3231 &rtc)
+const char* RTCGetString(RTC_DS3231 &rtc)
 {
     static char buffer[BUFFER_SIZE];
     DateTime now = rtc.now();
