@@ -5,7 +5,7 @@
 #define BUFFER_SIZE_INFO 60
 #define BUFFER_SIZE_FW 32
 
-void prepareSPS30()
+void sps30Prepare()
 {
     sensirion_i2c_init();
     if(sps30_probe() != 0)
@@ -20,11 +20,11 @@ void prepareSPS30()
     }
     else
     {
-        sps30_reset();
+        DBG_PRINTLN(sps30ModuleInfo());
     }
 }
 
-bool readNewData(sps30_measurement &data)
+bool sps30ReadNewData(sps30_measurement &data)
 {
     struct sps30_measurement val;
     uint16_t data_ready;
@@ -59,7 +59,7 @@ bool readNewData(sps30_measurement &data)
     return true;
 }
 
-const char* toStringModuleInfo()
+const char* sps30ModuleInfo()
 {
     uint8_t major, minor;
     static char buffer[BUFFER_SIZE_INFO];
