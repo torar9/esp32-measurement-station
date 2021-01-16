@@ -4,8 +4,8 @@
 #include <Arduino.h>
 #include <sps30.h>
 
-void prepareSPS30();
-bool readNewData(sps30_measurement &data);
-const char* toStringModuleInfo();
+void sps30Prepare();
+bool sps30ReadNewData(sps30_measurement &data);
+const char* sps30ModuleInfo();
 
 #endif
