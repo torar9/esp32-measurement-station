@@ -23,7 +23,7 @@ void RTCSetTimeOnline(RTC_DS3231 &rtc, tm &timeStr)
     rtc.adjust(time);
 }
 
-const char* RTCGetString(RTC_DS3231 &rtc)
+char* RTCGetString(RTC_DS3231 &rtc)
 {
     static char buffer[BUFFER_SIZE];
     DateTime now = rtc.now();

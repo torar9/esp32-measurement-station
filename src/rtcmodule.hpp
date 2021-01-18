@@ -8,6 +8,6 @@
 
 void RTCPrepare(RTC_DS3231 &rtc);
 void RTCSetTimeOnline(RTC_DS3231 &rtc, tm &timeStr);
-const char* RTCGetString(RTC_DS3231 &rtc);
+char* RTCGetString(RTC_DS3231 &rtc);
 
 #endif
