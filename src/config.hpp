@@ -4,21 +4,7 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
 #include <ArduinoOTA.h>
-
-#define DEBUG 1
-#if DEBUG
-  #define DBG_SERIAL_SETUP(x) Serial.begin(x);
-  #define DBG_PRINTF(x, y) Serial.printf(x, y);
-  #define DBG_PRINT(x) Serial.print(x)
-  #define DBG_PRINTDEC(x) Serial.print(x, DEC)
-  #define DBG_PRINTLN(x) Serial.println(x)
-#else
-  #define DBG_SERIAL_SETUP(X)
-  #define DBG_PRINTF(X, Y)
-  #define DBG_PRINT(x)
-  #define DBG_PRINTDEC(x)
-  #define DBG_PRINTLN(x)
-#endif
+#include "debug.hpp"
 
 #define BAUD_RATE 115200
 #define uS_TO_S_FACTOR 1000000
