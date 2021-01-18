@@ -4,7 +4,6 @@
 #include <ArduinoOTA.h>
 #include <Wire.h>
 #include <ArduinoJson.h>
-#include <DHT.h>
 #include <Adafruit_BME680.h>
 #include "config.hpp"
 #include "storage.hpp"
@@ -13,7 +12,6 @@
 
 WiFiClient wifiClient;
 PubSubClient mqClient(wifiClient);
-DHT dhtSensor(DHT_PIN, DHT_TYPE);
 RTC_DS3231 rtc;
 Adafruit_BME680 bme;
 SDFS card(SD);
