@@ -8,7 +8,7 @@
 
 #define BAUD_RATE 115200
 #define uS_TO_S_FACTOR 1000000
-#define TIME_TO_SLEEP 10
+#define TIME_TO_SLEEP 60
 #define LOOP_DELAY 10000
 #define DHT_TYPE DHT22
 #define DHT_PIN 17
@@ -16,6 +16,8 @@
 #define LED_DELAY 300
 #define BATTERY_PIN 32
 #define SD_CS 5
+#define JSON_DOC_SIZE 12288
+#define FILE_NAME "/station/station_data.json"
 
 const char* ssid = "Damian";
 const char* passwd = "";
@@ -62,7 +64,7 @@ void setupOTA()
         type = "filesystem";
 
       // NOTE: if updating SPIFFS this would be the place to unmount SPIFFS using SPIFFS.end()
-      Serial.println("Start updating " + type);
+      DBG_PRINTLN("Start updating " + type);
     })
     .onEnd([]()
     {
