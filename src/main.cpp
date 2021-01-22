@@ -23,11 +23,15 @@ void test(measurments &data);
 void measure(measurments &data, RTC_DS3231 &rtc, Adafruit_BME680 &bme);
 bool uploadData(DynamicJsonDocument &doc);
 bool backupData(SDFS &card, DynamicJsonDocument &doc, measurments &data, char* filename);
+double readBatteryLevel();
 
 void setup() 
 {
   delay(2000);
   DBG_SERIAL_BEGIN(BAUD_RATE);
+
+  pinMode(BATTERY_PIN, INPUT);
+
   cardPrepare(card, SD_CS);
   sps30Prepare();
   sps30_stop_measurement();
@@ -114,6 +118,8 @@ void callback(char* topic, byte* message, unsigned int length)
 
 void test(measurments &data)
 {
+  DBG_PRINT("Battery level: ");
+  DBG_PRINT(data.batteryLevel);
   DBG_PRINT("temperature: ");
   DBG_PRINT(data.temperature);
   DBG_PRINT(" °C");
@@ -151,6 +157,7 @@ void test(measurments &data)
 
 void measure(measurments &data, RTC_DS3231 &rtc, Adafruit_BME680 &bme)
 {
+  data.batteryLevel = readBatteryLevel();
   data.temperature = bme.readTemperature();
   data.humidity = bme.readHumidity();
   data.altitude = bme.readAltitude(1013.25);
@@ -178,4 +185,9 @@ bool backupData(SDFS &card, DynamicJsonDocument &doc, measurments &data, char* f
   addEventToJSON(doc, data);
   
   return cardWriteJSONToFile(card, doc, filename);
+}
+
+double readBatteryLevel()
+{
+  return map(analogRead(BATTERY_PIN), 0.0f, 4095.0f, 0, 100);
 }
