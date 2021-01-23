@@ -168,9 +168,16 @@ void measure(measurments &data, RTC_DS3231 &rtc, Adafruit_BME680 &bme)
 
 bool uploadData(DynamicJsonDocument &doc)
 {
+  String output;
   DBG_PRINTLN("Uploading data...");
 
-  return true;
+  if(!doc.isNull())
+  {
+    serializeJsonPretty(doc, output);
+    return mqClient.publish("esp32/jsonPrint", output.c_str());
+  }
+
+  return false;
 }
 
 bool backupData(SDFS &card, DynamicJsonDocument &doc, measurments &data, char* filename)
