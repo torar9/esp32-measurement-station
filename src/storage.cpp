@@ -77,3 +77,8 @@ void addEventToJSON(DynamicJsonDocument &doc, measurments &event)
     log["nc_4p0"] = event.spsData.nc_4p0;
     log["typical_particle_size"] = event.spsData.typical_particle_size;
 }
+
+bool cardClearFile(SDFS &card, char* fileName)
+{
+    return card.remove(fileName);
+}

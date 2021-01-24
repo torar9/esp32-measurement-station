@@ -12,5 +12,6 @@ bool cardPrepare(SDFS &card, uint8_t pin);
 bool cardWriteJSONToFile(SDFS &card, DynamicJsonDocument &doc, char* fileName);
 bool cardLoadJSONFromFile(SDFS &card, DynamicJsonDocument &doc, char* fileName);
 void addEventToJSON(DynamicJsonDocument &doc, measurments &event);
+bool cardClearFile(SDFS &card, char* fileName);
 
 #endif
