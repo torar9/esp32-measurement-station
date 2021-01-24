@@ -82,23 +82,18 @@ void loop()
       DBG_PRINTLN(F("Recconecting MQTT client"));
       
       if(mqClient.connect(mqttID, mqttName, mqttPasswd))
-      {
-        cardLoadJSONFromFile(card, doc, (char*)FILE_NAME);
-        addEventToJSON(doc, data);
-        test(data);
-        
-        success = uploadData(doc);
-      }
+        goto upload;
     }
     else
     {
-      cardLoadJSONFromFile(card, doc, (char*)FILE_NAME);
-      addEventToJSON(doc, data);
-      test(data);
+      upload:
+        cardLoadJSONFromFile(card, doc, (char*)FILE_NAME);
+        addEventToJSON(doc, data);
+        test(data);
 
-      success = uploadData(doc);
-      if(success)
-        cardClearFile(card, FILE_NAME);
+        success = uploadData(doc);
+        if(success)
+          cardClearFile(card, FILE_NAME);
     }
   }
 
