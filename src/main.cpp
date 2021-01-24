@@ -97,6 +97,8 @@ void loop()
       test(data);
 
       success = uploadData(doc);
+      if(success)
+        cardClearFile(card, FILE_NAME);
     }
   }
 
