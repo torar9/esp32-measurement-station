@@ -17,16 +17,17 @@
 #define BATTERY_PIN 32
 #define SD_CS 5
 #define JSON_DOC_SIZE 12288
+#define MQTT_PACKET_SIZE 512
 #define FILE_NAME "/station/station_data.json"
 
-const char* ssid = "Damian";
+const char* ssid = "";
 const char* passwd = "";
 const char* ntpServer = "0.cz.pool.ntp.org";
 const char* mqttID = "esp32";
-const char* mqttName = "ghost";
+const char* mqttName = "";
 const char* mqttPasswd = "";
-const char* mqtt_server = "192.168.0.38";
-const char* hostname = "ESP-32";
+const char* mqtt_server = "";
+const char* hostname = "esp32";
 const char* passwdHash = "";
 const long gmtOffset_sec = 3600;
 const int daylightOffset_sec = 3600;
