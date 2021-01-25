@@ -32,7 +32,12 @@ void setup()
 
   pinMode(BATTERY_PIN, INPUT);
 
-  cardPrepare(card, SD_CS);
+  if(!cardPrepare(card, SD_CS))
+  {
+    DBG_PRINTLN("Unable to init SD card");
+    abort();
+  }
+
   sps30Prepare();
   sps30_stop_measurement();
 
@@ -48,6 +53,7 @@ void setup()
 
       mqClient.setServer(mqtt_server, 1883);
       mqClient.setCallback(callback);
+      mqClient.setBufferSize(MQTT_PACKET_SIZE);
   }
 
   RTCPrepare(rtc);
@@ -77,11 +83,11 @@ void loop()
   {
     DBG_PRINTLN("Wi-Fi connected.... uploading data");
 
-    if(mqClient.state() != MQTT_CONNECTED)
+    if(!mqClient.connected())
     {
       DBG_PRINTLN(F("Recconecting MQTT client"));
       
-      if(mqClient.connect(mqttID, mqttName, mqttPasswd))
+      if(mqClient.connect(mqttID))
         goto upload;
     }
     else
@@ -89,8 +95,9 @@ void loop()
       upload:
         cardLoadJSONFromFile(card, doc, (char*)FILE_NAME);
         addEventToJSON(doc, data);
-        test(data);
+        //serializeJsonPretty(doc, Serial);
 
+        DBG_PRINTLN("Uploading data...");
         success = uploadData(doc);
         if(success)
           cardClearFile(card, (char*)FILE_NAME);
@@ -101,6 +108,7 @@ void loop()
   {
     DBG_PRINTLN("Failed to upload... saving data to SD card");
     backupData(card, doc, data, (char*)FILE_NAME);
+    cardClearFile(card, (char*)FILE_NAME);
   }
   
   doc.clear();
@@ -165,13 +173,20 @@ void measure(measurments &data, RTC_DS3231 &rtc, Adafruit_BME680 &bme)
 
 bool uploadData(DynamicJsonDocument &doc)
 {
-  String output;
-  DBG_PRINTLN("Uploading data...");
-
   if(!doc.isNull())
   {
-    serializeJsonPretty(doc, output);
-    return mqClient.publish("esp32/jsonPrint", output.c_str());
+    DBG_PRINTLN("Doc not null");
+    JsonArray arr = doc["logs"];
+    for(auto e : arr)
+    {
+      String output;
+      serializeJsonPretty(e, output);
+      DBG_PRINTLN(output);
+      if(!mqClient.publish("esp32/jsonTest", output.c_str()))
+        return false;
+    }
+
+    return true;
   }
 
   return false;
@@ -181,10 +196,6 @@ bool backupData(SDFS &card, DynamicJsonDocument &doc, measurments &data, char* f
 {
   cardLoadJSONFromFile(card, doc, filename);
   DBG_PRINTLN("Printing doc:");
-  serializeJsonPretty(doc, Serial);
-
-  DBG_PRINTLN("Printing data from struct:");
-  test(data);
 
   addEventToJSON(doc, data);
   

@@ -1,5 +1,4 @@
 #include "storage.hpp"
-
 #include "debug.hpp"
 
 bool cardPrepare(SDFS &card, uint8_t pin)
