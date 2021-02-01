@@ -5,12 +5,17 @@
 #define BUFFER_SIZE_INFO 60
 #define BUFFER_SIZE_FW 32
 
-void sps30Prepare()
+bool sps30Prepare()
 {
     sensirion_i2c_init();
     if(sps30_probe() != 0)
     {
         DBG_PRINTLN(F("could not probe / connect with SPS30."));
+        return false;
+    }
+    else
+    {
+        DBG_PRINTLN(sps30ModuleInfo());
         int16_t ret = sps30_set_fan_auto_cleaning_interval_days(4);
         if(ret)
         {
@@ -18,10 +23,8 @@ void sps30Prepare()
             DBG_PRINTLN(ret);
         }
     }
-    else
-    {
-        DBG_PRINTLN(sps30ModuleInfo());
-    }
+
+    return true;
 }
 
 bool sps30ReadNewData(sps30_measurement &data)
