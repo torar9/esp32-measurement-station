@@ -184,7 +184,8 @@ void measure(measurments &data, RTC_DS3231 &rtc, Adafruit_BME680 &bme)
     data.pressure = NAN;
   }
   data.batteryLevel = readBatteryLevel();
-  data.time = RTCGetString(rtc);
+  if(rtcAvailable)
+    data.time = RTCGetString(rtc);
   sps30ReadNewData(data.spsData);
 }
 
