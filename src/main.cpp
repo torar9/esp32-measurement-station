@@ -35,7 +35,7 @@ void setup()
   if(!cardPrepare(card, SD_CS))
   {
     DBG_PRINTLN("Unable to init SD card");
-    abort();
+    cardAvailable = false;
   }
 
   sps30Prepare();
@@ -93,22 +93,24 @@ void loop()
     else
     {
       upload:
-        cardLoadJSONFromFile(card, doc, (char*)FILE_NAME);
+        if(cardAvailable)
+          cardLoadJSONFromFile(card, doc, (char*)FILE_NAME);
         addEventToJSON(doc, data);
         //serializeJsonPretty(doc, Serial);
 
         DBG_PRINTLN("Uploading data...");
         success = uploadData(doc);
-        if(success)
+        if(success && cardAvailable)
           cardClearFile(card, (char*)FILE_NAME);
     }
   }
 
-  if(!success)
+  if(!success && cardAvailable)
   {
     DBG_PRINTLN("Failed to upload... saving data to SD card");
+    if(cardAvailable)
     backupData(card, doc, data, (char*)FILE_NAME);
-    cardClearFile(card, (char*)FILE_NAME);
+    //cardClearFile(card, (char*)FILE_NAME);
   }
   
   doc.clear();
