@@ -16,12 +16,6 @@ bool sps30Prepare()
     else
     {
         DBG_PRINTLN(sps30ModuleInfo());
-        int16_t ret = sps30_set_fan_auto_cleaning_interval_days(4);
-        if(ret)
-        {
-            DBG_PRINT(F("error setting the auto-clean interval: "));
-            DBG_PRINTLN(ret);
-        }
     }
 
     return true;
