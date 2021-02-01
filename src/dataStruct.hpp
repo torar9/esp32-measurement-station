@@ -5,12 +5,12 @@
 
 struct measurments
 {
-  int humidity;
+  float humidity;
   char* time;
-  double batteryLevel;
-  double temperature;
-  double pressure;
-  double altitude;
+  float batteryLevel;
+  float temperature;
+  float pressure;
+  float altitude;
   sps30_measurement spsData;
 };
 
