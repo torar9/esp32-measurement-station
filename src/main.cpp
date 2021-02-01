@@ -44,6 +44,7 @@ void setup()
   if(!bme.begin())
   {
     DBG_PRINTLN("Unable to init BME680!");
+    bmeAvailable = false;
   }
 
   setupWifi();
@@ -56,7 +57,11 @@ void setup()
       mqClient.setBufferSize(MQTT_PACKET_SIZE);
   }
 
-  RTCPrepare(rtc);
+  if(!rtc.begin())
+  {
+    DBG_PRINTLN(F("Couldn't init RTC"));
+    rtcAvailable = false;
+  }
 
   if(rtc.lostPower() && WiFi.status() == WL_CONNECTED)
   {
@@ -164,11 +169,21 @@ void test(measurments &data)
 
 void measure(measurments &data, RTC_DS3231 &rtc, Adafruit_BME680 &bme)
 {
+  if(bmeAvailable)
+  {
+    data.temperature = bme.readTemperature();
+    data.humidity = bme.readHumidity();
+    data.altitude = bme.readAltitude(1013.25);
+    data.pressure = bme.readPressure() / 100.0;
+  }
+  else
+  {
+    data.temperature = NAN;
+    data.humidity = NAN;
+    data.altitude = NAN;
+    data.pressure = NAN;
+  }
   data.batteryLevel = readBatteryLevel();
-  data.temperature = bme.readTemperature();
-  data.humidity = bme.readHumidity();
-  data.altitude = bme.readAltitude(1013.25);
-  data.pressure = bme.readPressure() / 100.0;
   data.time = RTCGetString(rtc);
   sps30ReadNewData(data.spsData);
 }
