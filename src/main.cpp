@@ -109,7 +109,7 @@ void loop()
   {
     DBG_PRINTLN("Failed to upload... saving data to SD card");
     if(cardAvailable)
-    backupData(card, doc, data, (char*)FILE_NAME);
+      backupData(card, doc, data, (char*)FILE_NAME);
     //cardClearFile(card, (char*)FILE_NAME);
   }
   
