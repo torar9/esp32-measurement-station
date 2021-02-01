@@ -38,8 +38,9 @@ void setup()
     cardAvailable = false;
   }
 
-  sps30Prepare();
-  sps30_stop_measurement();
+  if(!sps30Prepare())
+    spsAvailable = false;
+  else sps30_stop_measurement();
 
   if(!bme.begin())
   {
