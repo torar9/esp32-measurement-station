@@ -3,17 +3,6 @@
 
 #define BUFFER_SIZE 40
 
-bool RTCPrepare(RTC_DS3231 &rtc)
-{
-    if(!rtc.begin())
-    {
-        DBG_PRINTLN(F("Couldn't find RTC"));
-	    return false;
-    }
-
-    return true;
-}
-
 void RTCSetTimeOnline(RTC_DS3231 &rtc, tm &timeStr)
 {
     //struct tm timeStr;
