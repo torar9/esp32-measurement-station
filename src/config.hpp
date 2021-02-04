@@ -34,6 +34,7 @@ const int daylightOffset_sec = 3600;
 bool cardAvailable = true;
 bool bmeAvailable = true;
 bool rtcAvailable = true;
+bool spsAvailable = true;
 
 void setupWifi()
 {
