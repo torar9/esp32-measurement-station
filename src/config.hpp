@@ -7,8 +7,11 @@
 #include "debug.hpp"
 
 #define BAUD_RATE 115200
-#define uS_TO_S_FACTOR 1000000
-#define TIME_TO_SLEEP 60
+#define uS_TO_S_FACTOR (uint64_t)1000000
+#define TIME_TO_SLEEP_DEFAULT (uint64_t)60
+#define TIME_TO_SLEEP_HIGH (uint64_t)60
+#define TIME_TO_SLEEP_MEDIUM (uint64_t)1800
+#define TIME_TO_SLEEP_LOW (uint64_t)3600
 #define LOOP_DELAY 10000
 #define DHT_TYPE DHT22
 #define DHT_PIN 17
@@ -27,10 +30,14 @@ const char* mqttID = "esp32";
 const char* mqttName = "";
 const char* mqttPasswd = "";
 const char* mqtt_server = "";
+const uint16_t mqtt_port = 1883;
 const char* hostname = "esp32";
 const char* passwdHash = "";
 const long gmtOffset_sec = 3600;
 const int daylightOffset_sec = 3600;
+const int high_level = 70;
+const int medium_level = 40;
+const int low_level = 20;
 bool cardAvailable = true;
 bool bmeAvailable = true;
 bool rtcAvailable = true;
