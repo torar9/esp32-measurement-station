@@ -24,6 +24,7 @@ void measure(measurments &data, RTC_DS3231 &rtc, Adafruit_BME680 &bme);
 bool uploadData(DynamicJsonDocument &doc);
 bool backupData(SDFS &card, DynamicJsonDocument &doc, measurments &data, char* filename);
 double readBatteryLevel();
+void setSleepTimer(float batteryLevel);
 
 void setup() 
 {
@@ -51,11 +52,11 @@ void setup()
   setupWifi();
   if(WiFi.status() == WL_CONNECTED)
   {
-      setupOTA();
+    setupOTA();
 
-      mqClient.setServer(mqtt_server, 1883);
-      mqClient.setCallback(callback);
-      mqClient.setBufferSize(MQTT_PACKET_SIZE);
+    mqClient.setServer(mqtt_server, mqtt_port);
+    mqClient.setCallback(callback);
+    mqClient.setBufferSize(MQTT_PACKET_SIZE);
   }
 
   if(!rtc.begin())
@@ -74,7 +75,7 @@ void setup()
     RTCSetTimeOnline(rtc, timeStr);
   }
 
-  esp_sleep_enable_timer_wakeup(uS_TO_S_FACTOR * TIME_TO_SLEEP);
+  esp_sleep_enable_timer_wakeup(uS_TO_S_FACTOR * TIME_TO_SLEEP_DEFAULT);
 }
 
 void loop() 
@@ -121,6 +122,7 @@ void loop()
   
   doc.clear();
   DBG_FLUSH();
+  setSleepTimer(data.batteryLevel);
   esp_light_sleep_start();
 }
 
@@ -223,4 +225,15 @@ bool backupData(SDFS &card, DynamicJsonDocument &doc, measurments &data, char* f
 double readBatteryLevel()
 {
   return map(analogRead(BATTERY_PIN), 0.0f, 4095.0f, 0, 100);
+}
+
+void setSleepTimer(float batteryLevel)
+{
+  if(batteryLevel == 0 || batteryLevel == NAN)
+    esp_sleep_enable_timer_wakeup(uS_TO_S_FACTOR * TIME_TO_SLEEP_DEFAULT);
+    else if(batteryLevel >= high_level)
+      esp_sleep_enable_timer_wakeup(uS_TO_S_FACTOR * TIME_TO_SLEEP_HIGH);
+    else if(batteryLevel < high_level && batteryLevel >= medium_level)
+      esp_sleep_enable_timer_wakeup(uS_TO_S_FACTOR * TIME_TO_SLEEP_MEDIUM);
+    else esp_sleep_enable_timer_wakeup(uS_TO_S_FACTOR * TIME_TO_SLEEP_LOW);
 }
