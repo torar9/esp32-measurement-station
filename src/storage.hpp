@@ -8,7 +8,7 @@
 #include <FS.h>
 #include "dataStruct.hpp"
 
-bool cardPrepare(SDFS &card, uint8_t pin);
+bool cardPrepare(SDFS &card);
 bool cardWriteJSONToFile(SDFS &card, DynamicJsonDocument &doc, char* fileName);
 bool cardLoadJSONFromFile(SDFS &card, DynamicJsonDocument &doc, char* fileName);
 void addEventToJSON(DynamicJsonDocument &doc, measurments &event);

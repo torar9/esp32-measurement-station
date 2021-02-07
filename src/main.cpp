@@ -33,10 +33,21 @@ void setup()
 
   pinMode(BATTERY_PIN, INPUT);
 
-  if(!cardPrepare(card, SD_CS))
+  if(!card.begin(SD_CS))
   {
-    DBG_PRINTLN("Unable to init SD card");
-    cardAvailable = false;
+    if(!card.begin(SD_CS))
+    {
+      DBG_PRINTLN("Unable to init SD card");
+      cardAvailable = false;
+    }
+  }
+  else
+  {
+    if(!cardPrepare(card))
+    {
+      DBG_PRINTLN("Unable to create folder");
+      cardAvailable = false;
+    }
   }
 
   if(!sps30Prepare())
@@ -80,6 +91,7 @@ void setup()
 
 void loop() 
 {
+  DBG_PRINTLN("Start...");
   bool success = false;
   DynamicJsonDocument doc(JSON_DOC_SIZE);
   measurments data;
@@ -121,9 +133,10 @@ void loop()
   }
   
   doc.clear();
+  DBG_PRINTLN("End...");
   DBG_FLUSH();
   setSleepTimer(data.batteryLevel);
-  esp_light_sleep_start();
+  esp_deep_sleep_start();
 }
 
 void callback(char* topic, byte* message, unsigned int length)
@@ -230,10 +243,23 @@ double readBatteryLevel()
 void setSleepTimer(float batteryLevel)
 {
   if(batteryLevel == 0 || batteryLevel == NAN)
+  {
+    DBG_PRINTLN("Level sleep: 0");
     esp_sleep_enable_timer_wakeup(uS_TO_S_FACTOR * TIME_TO_SLEEP_DEFAULT);
-    else if(batteryLevel >= high_level)
-      esp_sleep_enable_timer_wakeup(uS_TO_S_FACTOR * TIME_TO_SLEEP_HIGH);
-    else if(batteryLevel < high_level && batteryLevel >= medium_level)
-      esp_sleep_enable_timer_wakeup(uS_TO_S_FACTOR * TIME_TO_SLEEP_MEDIUM);
-    else esp_sleep_enable_timer_wakeup(uS_TO_S_FACTOR * TIME_TO_SLEEP_LOW);
+  }
+  else if(batteryLevel >= high_level)
+  {
+    DBG_PRINTLN("Level sleep: 1");
+    esp_sleep_enable_timer_wakeup(uS_TO_S_FACTOR * TIME_TO_SLEEP_HIGH);
+  }
+  else if(batteryLevel < high_level && batteryLevel >= medium_level)
+  {
+    DBG_PRINTLN("Level sleep: 2");
+    esp_sleep_enable_timer_wakeup(uS_TO_S_FACTOR * TIME_TO_SLEEP_MEDIUM);
+  }
+  else 
+  {
+    DBG_PRINTLN("Level sleep: 3");
+    esp_sleep_enable_timer_wakeup(uS_TO_S_FACTOR * TIME_TO_SLEEP_LOW);
+  }
 }

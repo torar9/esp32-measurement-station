@@ -1,17 +1,13 @@
 #include "storage.hpp"
 #include "debug.hpp"
 
-bool cardPrepare(SDFS &card, uint8_t pin)
+bool cardPrepare(SDFS &card)
 {
-    if(card.begin(pin))
+    if(!SD.exists("/station"))
     {
-        if(!SD.exists("/station"))
-        {
-            return SD.mkdir("/station");
-        }
-        return true;
+        return SD.mkdir("/station");
     }
-    else return false;
+    return true;
 }
 
 bool cardWriteJSONToFile(SDFS &card, DynamicJsonDocument &doc, char* fileName)
