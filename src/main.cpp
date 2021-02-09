@@ -18,6 +18,11 @@ RTC_DS3231 rtc;
 Adafruit_BME680 bme;
 SDFS card(SD);
 
+bool cardAvailable = true;
+bool bmeAvailable = true;
+bool rtcAvailable = true;
+bool spsAvailable = true;
+
 void callback(char* topic, byte* message, unsigned int length);
 void test(measurments &data);
 void measure(measurments &data, RTC_DS3231 &rtc, Adafruit_BME680 &bme);

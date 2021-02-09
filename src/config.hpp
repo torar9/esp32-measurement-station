@@ -27,7 +27,7 @@ const char* ssid = "";
 const char* passwd = "";
 const char* ntpServer = "0.cz.pool.ntp.org";
 const char* mqttID = "esp32";
-const char* mqttName = "";
+const char* mqttName = "esp32";
 const char* mqttPasswd = "";
 const char* mqtt_server = "";
 const uint16_t mqtt_port = 1883;
@@ -38,10 +38,6 @@ const int daylightOffset_sec = 3600;
 const int high_level = 70;
 const int medium_level = 40;
 const int low_level = 20;
-bool cardAvailable = true;
-bool bmeAvailable = true;
-bool rtcAvailable = true;
-bool spsAvailable = true;
 
 void setupWifi()
 {
