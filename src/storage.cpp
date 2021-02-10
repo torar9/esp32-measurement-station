@@ -73,7 +73,26 @@ void addEventToJSON(DynamicJsonDocument &doc, measurments &event)
     log["typical_particle_size"] = event.spsData.typical_particle_size;
 }
 
+void addEventToJSON(DynamicJsonDocument &doc, statusStruct &status)
+{
+    doc["cardAvailable"] = status.cardAvailable;
+    doc["bmeAvailable"] = status.bmeAvailable;
+    doc["rtcAvailable"] = status.rtcAvailable;
+    doc["spsAvailable"] = status.spsAvailable;
+    doc["problemOccured"] = status.problemOccured;
+}
+
 bool cardClearFile(SDFS &card, char* fileName)
 {
     return card.remove(fileName);
+}
+
+bool cardBackupData(SDFS &card, DynamicJsonDocument &doc, measurments &data, char* filename)
+{
+  cardLoadJSONFromFile(card, doc, filename);
+  DBG_PRINTLN("Printing doc:");
+
+  addEventToJSON(doc, data);
+  
+  return cardWriteJSONToFile(card, doc, filename);
 }

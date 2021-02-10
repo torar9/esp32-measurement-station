@@ -8,7 +8,7 @@
 
 #define BAUD_RATE 115200
 #define uS_TO_S_FACTOR (uint64_t)1000000
-#define TIME_TO_SLEEP_DEFAULT (uint64_t)60
+#define TIME_TO_SLEEP_DEFAULT (uint64_t)30
 #define TIME_TO_SLEEP_HIGH (uint64_t)60
 #define TIME_TO_SLEEP_MEDIUM (uint64_t)1800
 #define TIME_TO_SLEEP_LOW (uint64_t)3600
@@ -19,27 +19,28 @@
 #define LED_DELAY 300
 #define BATTERY_PIN 32
 #define SD_CS 5
-#define JSON_DOC_SIZE 12288
+#define JSON_DOC_SIZE_MEASUREMENTS 12288
+#define JSON_DOC_SIZE_STATUS 192
 #define MQTT_PACKET_SIZE 512
 #define FILE_NAME "/station/station_data.json"
 
-const char* ssid = "";
-const char* passwd = "";
-const char* ntpServer = "0.cz.pool.ntp.org";
-const char* mqttID = "esp32";
-const char* mqttName = "esp32";
-const char* mqttPasswd = "";
-const char* mqtt_server = "";
-const uint16_t mqtt_port = 1883;
-const char* hostname = "esp32";
-const char* passwdHash = "";
-const long gmtOffset_sec = 3600;
-const int daylightOffset_sec = 3600;
-const int high_level = 70;
-const int medium_level = 40;
-const int low_level = 20;
+static const char* ssid = "";
+static const char* passwd = "";
+static const char* ntpServer = "0.cz.pool.ntp.org";
+static const char* mqttID = "esp32";
+static const char* mqttName = "esp32";
+static const char* mqttPasswd = "";
+static const char* mqtt_server = "";
+static const uint16_t mqtt_port = 1883;
+static const char* hostname = "esp32";
+static const char* passwdHash = "";
+static const long gmtOffset_sec = 3600;
+static const int daylightOffset_sec = 3600;
+static const int high_level = 70;
+static const int medium_level = 40;
+static const int low_level = 20;
 
-void setupWifi()
+inline void setupWifi()
 {
   DBG_PRINTLN(F("Connecting to WiFi..."));
   WiFi.mode(WIFI_MODE_STA);
@@ -60,7 +61,7 @@ void setupWifi()
   }
 }
 
-void setupOTA()
+inline void setupOTA()
 {
   ArduinoOTA
     .onStart([]()
@@ -85,11 +86,11 @@ void setupOTA()
     .onError([](ota_error_t error)
     {
       Serial.printf("Error[%u]: ", error);
-      if (error == OTA_AUTH_ERROR) Serial.println("Auth Failed");
-      else if (error == OTA_BEGIN_ERROR) Serial.println("Begin Failed");
-      else if (error == OTA_CONNECT_ERROR) Serial.println("Connect Failed");
-      else if (error == OTA_RECEIVE_ERROR) Serial.println("Receive Failed");
-      else if (error == OTA_END_ERROR) Serial.println("End Failed");
+      if (error == OTA_AUTH_ERROR) DBG_PRINTLN(F("Auth Failed"));
+      else if (error == OTA_BEGIN_ERROR) DBG_PRINTLN(F("Begin Failed"));
+      else if (error == OTA_CONNECT_ERROR) DBG_PRINTLN(F("Connect Failed"));
+      else if (error == OTA_RECEIVE_ERROR) DBG_PRINTLN(F("Receive Failed"));
+      else if (error == OTA_END_ERROR) DBG_PRINTLN(F("End Failed"));
     });
 
   ArduinoOTA.begin();

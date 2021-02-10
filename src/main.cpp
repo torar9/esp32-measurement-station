@@ -5,7 +5,9 @@
 #include <Arduino.h>
 #include <WiFi.h>
 #include <Wire.h>
+#include "communication.hpp"
 #include "dataStruct.hpp"
+#include "statstruct.hpp"
 #include "rtcmodule.hpp"
 #include "storage.hpp"
 #include "config.hpp"
@@ -17,19 +19,11 @@ PubSubClient mqClient(wifiClient);
 RTC_DS3231 rtc;
 Adafruit_BME680 bme;
 SDFS card(SD);
+statusStruct status;
 
-bool cardAvailable = true;
-bool bmeAvailable = true;
-bool rtcAvailable = true;
-bool spsAvailable = true;
-
-void callback(char* topic, byte* message, unsigned int length);
-void test(measurments &data);
 void measure(measurments &data, RTC_DS3231 &rtc, Adafruit_BME680 &bme);
-bool uploadData(DynamicJsonDocument &doc);
-bool backupData(SDFS &card, DynamicJsonDocument &doc, measurments &data, char* filename);
 double readBatteryLevel();
-void setSleepTimer(float batteryLevel);
+int setSleepTimer(float batteryLevel);
 
 void setup() 
 {
@@ -43,7 +37,8 @@ void setup()
     if(!card.begin(SD_CS))
     {
       DBG_PRINTLN("Unable to init SD card");
-      cardAvailable = false;
+      status.cardAvailable = false;
+      status.problemOccured = true;
     }
   }
   else
@@ -51,18 +46,23 @@ void setup()
     if(!cardPrepare(card))
     {
       DBG_PRINTLN("Unable to create folder");
-      cardAvailable = false;
+      status.cardAvailable = false;
+      status.problemOccured = true;
     }
   }
 
   if(!sps30Prepare())
-    spsAvailable = false;
+  {
+    status.spsAvailable = false;
+    status.problemOccured = true;
+  }
   else sps30_stop_measurement();
 
   if(!bme.begin())
   {
     DBG_PRINTLN("Unable to init BME680!");
-    bmeAvailable = false;
+    status.bmeAvailable = false;
+    status.problemOccured = true;
   }
 
   setupWifi();
@@ -78,7 +78,8 @@ void setup()
   if(!rtc.begin())
   {
     DBG_PRINTLN(F("Couldn't init RTC"));
-    rtcAvailable = false;
+    status.rtcAvailable = false;
+    status.problemOccured = true;
   }
 
   if(rtc.lostPower() && WiFi.status() == WL_CONNECTED)
@@ -98,7 +99,7 @@ void loop()
 {
   DBG_PRINTLN("Start...");
   bool success = false;
-  DynamicJsonDocument doc(JSON_DOC_SIZE);
+  DynamicJsonDocument doc(JSON_DOC_SIZE_MEASUREMENTS);
   measurments data;
 
   measure(data, rtc, bme);
@@ -117,80 +118,43 @@ void loop()
     else
     {
       upload:
-        if(cardAvailable)
+        if(status.cardAvailable)
           cardLoadJSONFromFile(card, doc, (char*)FILE_NAME);
+        
         addEventToJSON(doc, data);
         //serializeJsonPretty(doc, Serial);
 
         DBG_PRINTLN("Uploading data...");
-        success = uploadData(doc);
-        if(success && cardAvailable)
+        success = uploadData(mqClient, doc, (char*)"esp32/jsonTest");
+
+        //reportProblem(mqClient, status, (char*)"esp32/jsonStatus");
+        if(status.problemOccured)
+          reportProblem(mqClient, status, (char*)"esp32/jsonStatus");
+
+        if(success && status.cardAvailable)
           cardClearFile(card, (char*)FILE_NAME);
     }
   }
 
-  if(!success && cardAvailable)
+  if(!success && status.cardAvailable)
   {
     DBG_PRINTLN("Failed to upload... saving data to SD card");
-    if(cardAvailable)
-      backupData(card, doc, data, (char*)FILE_NAME);
+    if(status.cardAvailable)
+      cardBackupData(card, doc, data, (char*)FILE_NAME);
     //cardClearFile(card, (char*)FILE_NAME);
   }
   
   doc.clear();
   DBG_PRINTLN("End...");
   DBG_FLUSH();
+
   setSleepTimer(data.batteryLevel);
   esp_deep_sleep_start();
 }
 
-void callback(char* topic, byte* message, unsigned int length)
-{
-  DBG_PRINTLN(F("Callback function"));
-}
-
-void test(measurments &data)
-{
-  DBG_PRINT("Battery level: ");
-  DBG_PRINT(data.batteryLevel);
-  DBG_PRINT("temperature: ");
-  DBG_PRINT(data.temperature);
-  DBG_PRINT(" °C");
-  DBG_PRINT(" humidity: "); 
-  DBG_PRINT(data.humidity);
-  DBG_PRINT(" %");
-  DBG_PRINT(" pressure: "); 
-  DBG_PRINT(data.pressure);
-  DBG_PRINT(" altitude: "); 
-  DBG_PRINTLN(data.altitude);
-
-  DBG_PRINT(" mc1p0: "); 
-  DBG_PRINT(data.spsData.mc_1p0);
-  DBG_PRINT(" mc2p5: "); 
-  DBG_PRINT(data.spsData.mc_2p5);
-  DBG_PRINT(" mc4p0: "); 
-  DBG_PRINT(data.spsData.mc_4p0);
-  DBG_PRINT(" mc10p0: "); 
-  DBG_PRINT(data.spsData.mc_10p0);
-  DBG_PRINT(" nc0p5: "); 
-  DBG_PRINT(data.spsData.nc_0p5);
-  DBG_PRINT(" nc1p0: "); 
-  DBG_PRINT(data.spsData.nc_1p0);
-  DBG_PRINT(" nc2p5: "); 
-  DBG_PRINT(data.spsData.nc_2p5);
-  DBG_PRINT(" nc4p0: "); 
-  DBG_PRINT(data.spsData.nc_4p0);
-  DBG_PRINT(" nc10p0: "); 
-  DBG_PRINT(data.spsData.nc_10p0);
-  DBG_PRINT(" partSize: "); 
-  DBG_PRINTLN(data.spsData.typical_particle_size);
-
-  DBG_PRINTLN(data.time);
-}
-
 void measure(measurments &data, RTC_DS3231 &rtc, Adafruit_BME680 &bme)
 {
-  if(bmeAvailable)
+  if(status.bmeAvailable)
   {
     data.temperature = bme.readTemperature();
     data.humidity = bme.readHumidity();
@@ -205,39 +169,8 @@ void measure(measurments &data, RTC_DS3231 &rtc, Adafruit_BME680 &bme)
     data.pressure = NAN;
   }
   data.batteryLevel = readBatteryLevel();
-  data.time = (rtcAvailable)? RTCGetString(rtc) : (char*)"";
+  data.time = (status.rtcAvailable)? RTCGetString(rtc) : (char*)"";
   sps30ReadNewData(data.spsData);
-}
-
-bool uploadData(DynamicJsonDocument &doc)
-{
-  if(!doc.isNull())
-  {
-    DBG_PRINTLN("Doc not null");
-    JsonArray arr = doc["logs"];
-    for(auto e : arr)
-    {
-      String output;
-      serializeJsonPretty(e, output);
-      DBG_PRINTLN(output);
-      if(!mqClient.publish("esp32/jsonTest", output.c_str()))
-        return false;
-    }
-
-    return true;
-  }
-
-  return false;
-}
-
-bool backupData(SDFS &card, DynamicJsonDocument &doc, measurments &data, char* filename)
-{
-  cardLoadJSONFromFile(card, doc, filename);
-  DBG_PRINTLN("Printing doc:");
-
-  addEventToJSON(doc, data);
-  
-  return cardWriteJSONToFile(card, doc, filename);
 }
 
 double readBatteryLevel()
@@ -245,26 +178,34 @@ double readBatteryLevel()
   return map(analogRead(BATTERY_PIN), 0.0f, 4095.0f, 0, 100);
 }
 
-void setSleepTimer(float batteryLevel)
+int setSleepTimer(float batteryLevel)
 {
   if(batteryLevel == 0 || batteryLevel == NAN)
   {
     DBG_PRINTLN("Level sleep: 0");
     esp_sleep_enable_timer_wakeup(uS_TO_S_FACTOR * TIME_TO_SLEEP_DEFAULT);
+
+    return 0;
   }
   else if(batteryLevel >= high_level)
   {
     DBG_PRINTLN("Level sleep: 1");
     esp_sleep_enable_timer_wakeup(uS_TO_S_FACTOR * TIME_TO_SLEEP_HIGH);
+
+    return 1;
   }
   else if(batteryLevel < high_level && batteryLevel >= medium_level)
   {
     DBG_PRINTLN("Level sleep: 2");
     esp_sleep_enable_timer_wakeup(uS_TO_S_FACTOR * TIME_TO_SLEEP_MEDIUM);
+
+    return 2;
   }
   else 
   {
     DBG_PRINTLN("Level sleep: 3");
     esp_sleep_enable_timer_wakeup(uS_TO_S_FACTOR * TIME_TO_SLEEP_LOW);
+
+    return 3;
   }
 }
