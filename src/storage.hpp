@@ -10,12 +10,14 @@
 #include "dataStruct.hpp"
 #include "statstruct.hpp"
 
-bool cardPrepare(SDFS &card);
-bool cardWriteJSONToFile(SDFS &card, DynamicJsonDocument &doc, char* fileName);
-bool cardLoadJSONFromFile(SDFS &card, DynamicJsonDocument &doc, char* fileName);
+extern SDFS card;
+
+bool cardPrepare();
+bool cardWriteJSONToFile(DynamicJsonDocument &doc, char* fileName);
+bool cardLoadJSONFromFile(DynamicJsonDocument &doc, char* fileName);
 void addEventToJSON(DynamicJsonDocument &doc, measurments &event);
 void addEventToJSON(DynamicJsonDocument &doc, statusStruct &status);
-bool cardClearFile(SDFS &card, char* fileName);
-bool cardBackupData(SDFS &card, DynamicJsonDocument &doc, measurments &data, char* filename);
+bool cardClearFile(char* fileName);
+bool cardBackupData(DynamicJsonDocument &doc, measurments &data, char* filename);
 
 #endif

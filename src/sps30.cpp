@@ -1,5 +1,6 @@
 #include "sps30.hpp"
 #include "debug.hpp"
+#include "communication.hpp"
 
 #define BUFFER_SIZE_MEASURE 80
 #define BUFFER_SIZE_INFO 60
@@ -9,14 +10,9 @@ bool sps30Prepare()
 {
     sensirion_i2c_init();
     if(sps30_probe() != 0)
-    {
-        DBG_PRINTLN(F("could not probe / connect with SPS30."));
         return false;
-    }
     else
-    {
-        DBG_PRINTLN(sps30ModuleInfo());
-    }
+        log(sps30ModuleInfo());
 
     return true;
 }

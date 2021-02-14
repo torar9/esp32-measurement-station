@@ -1,7 +1,8 @@
 #include "storage.hpp"
 #include "debug.hpp"
+#include "communication.hpp"
 
-bool cardPrepare(SDFS &card)
+bool cardPrepare()
 {
     if(!SD.exists("/station"))
     {
@@ -10,12 +11,12 @@ bool cardPrepare(SDFS &card)
     return true;
 }
 
-bool cardWriteJSONToFile(SDFS &card, DynamicJsonDocument &doc, char* fileName)
+bool cardWriteJSONToFile(DynamicJsonDocument &doc, char* fileName)
 {
     File file = card.open(fileName, FILE_WRITE);
     if(!file)
     {
-        DBG_PRINTLN("Unable to open file for write!");
+        log("Unable to open file for write!");
 
         return false;
     }
@@ -28,12 +29,15 @@ bool cardWriteJSONToFile(SDFS &card, DynamicJsonDocument &doc, char* fileName)
     return true;
 }
 
-bool cardLoadJSONFromFile(SDFS &card, DynamicJsonDocument &doc, char* fileName)
+bool cardLoadJSONFromFile(DynamicJsonDocument &doc, char* fileName)
 {
+    if(!card.exists(fileName))
+        return false;
+
     File file = card.open(fileName, FILE_READ);
     if(!file)
     {
-        DBG_PRINTLN("Unable to open file for read!");
+        log("Unable to open file for read!");
 
         return false;
     }
@@ -82,17 +86,19 @@ void addEventToJSON(DynamicJsonDocument &doc, statusStruct &status)
     doc["problemOccured"] = status.problemOccured;
 }
 
-bool cardClearFile(SDFS &card, char* fileName)
+bool cardClearFile(char* fileName)
 {
-    return card.remove(fileName);
+    if(card.exists(fileName))
+        return card.remove(fileName);
+    else return false;
 }
 
-bool cardBackupData(SDFS &card, DynamicJsonDocument &doc, measurments &data, char* filename)
+bool cardBackupData(DynamicJsonDocument &doc, measurments &data, char* filename)
 {
-  cardLoadJSONFromFile(card, doc, filename);
-  DBG_PRINTLN("Printing doc:");
+  cardLoadJSONFromFile(doc, filename);
+  log("Printing doc:");
 
   addEventToJSON(doc, data);
   
-  return cardWriteJSONToFile(card, doc, filename);
+  return cardWriteJSONToFile(doc, filename);
 }

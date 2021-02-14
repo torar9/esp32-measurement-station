@@ -30,22 +30,35 @@ void setup()
   delay(2000);
   DBG_SERIAL_BEGIN(BAUD_RATE);
 
+  setupWifi();
+  if(WiFi.status() == WL_CONNECTED)
+  {
+    ArduinoOTA.setHostname(hostname);
+    setupOTA();
+    //ArduinoOTA.begin();
+
+    mqClient.setServer(mqtt_server, mqtt_port);
+    mqClient.setCallback(callback);
+    mqClient.setBufferSize(MQTT_PACKET_SIZE);
+    mqClient.connect(mqttID);
+  }
+
   pinMode(BATTERY_PIN, INPUT);
 
   if(!card.begin(SD_CS))
   {
     if(!card.begin(SD_CS))
     {
-      DBG_PRINTLN("Unable to init SD card");
+      log("Unable to init SD card");
       status.cardAvailable = false;
       status.problemOccured = true;
     }
   }
   else
   {
-    if(!cardPrepare(card))
+    if(!cardPrepare())
     {
-      DBG_PRINTLN("Unable to create folder");
+      log("Unable to create folder");
       status.cardAvailable = false;
       status.problemOccured = true;
     }
@@ -53,31 +66,22 @@ void setup()
 
   if(!sps30Prepare())
   {
+    log("could not probe / connect with SPS30.");
     status.spsAvailable = false;
     status.problemOccured = true;
   }
-  else sps30_stop_measurement();
+  else sps30_stop_measurement(); //sps30_start_measurement();//
 
   if(!bme.begin())
   {
-    DBG_PRINTLN("Unable to init BME680!");
+    log("Unable to init BME680!");
     status.bmeAvailable = false;
     status.problemOccured = true;
   }
 
-  setupWifi();
-  if(WiFi.status() == WL_CONNECTED)
-  {
-    setupOTA();
-
-    mqClient.setServer(mqtt_server, mqtt_port);
-    mqClient.setCallback(callback);
-    mqClient.setBufferSize(MQTT_PACKET_SIZE);
-  }
-
   if(!rtc.begin())
   {
-    DBG_PRINTLN(F("Couldn't init RTC"));
+    log("Couldn't init RTC");
     status.rtcAvailable = false;
     status.problemOccured = true;
   }
@@ -89,28 +93,29 @@ void setup()
     configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
     getLocalTime(&timeStr);
 
-    RTCSetTimeOnline(rtc, timeStr);
+    RTCSetTimeOnline(timeStr);
   }
 
   esp_sleep_enable_timer_wakeup(uS_TO_S_FACTOR * TIME_TO_SLEEP_DEFAULT);
+
+  //mqClient.subscribe((char*)"esp32/debug");
 }
 
 void loop() 
 {
-  DBG_PRINTLN("Start...");
   bool success = false;
   DynamicJsonDocument doc(JSON_DOC_SIZE_MEASUREMENTS);
   measurments data;
 
+  log("Main loop...");
+  log("Starting to measure...");
   measure(data, rtc, bme);
 
   if(WiFi.status() == WL_CONNECTED)
   {
-    DBG_PRINTLN("Wi-Fi connected.... uploading data");
-
     if(!mqClient.connected())
     {
-      DBG_PRINTLN(F("Recconecting MQTT client"));
+      log("Recconecting MQTT client");
       
       if(mqClient.connect(mqttID))
         goto upload;
@@ -118,37 +123,41 @@ void loop()
     else
     {
       upload:
-        if(status.cardAvailable)
-          cardLoadJSONFromFile(card, doc, (char*)FILE_NAME);
+        if(status.cardAvailable && card.exists((char*)FILE_NAME))
+        {
+          log("Trying to load data from file...");
+          cardLoadJSONFromFile(doc, (char*)FILE_NAME);
+        }
         
         addEventToJSON(doc, data);
-        //serializeJsonPretty(doc, Serial);
 
-        DBG_PRINTLN("Uploading data...");
-        success = uploadData(mqClient, doc, (char*)"esp32/jsonTest");
+        log("Uploading data...");
+        success = uploadData(doc, (char*)DATA_TOPIC);
 
         //reportProblem(mqClient, status, (char*)"esp32/jsonStatus");
         if(status.problemOccured)
-          reportProblem(mqClient, status, (char*)"esp32/jsonStatus");
-
-        if(success && status.cardAvailable)
-          cardClearFile(card, (char*)FILE_NAME);
+          reportProblem(status, (char*)REPORT_TOPIC);
     }
   }
 
   if(!success && status.cardAvailable)
   {
-    DBG_PRINTLN("Failed to upload... saving data to SD card");
+    log("Failed to upload... saving data to SD card");
     if(status.cardAvailable)
-      cardBackupData(card, doc, data, (char*)FILE_NAME);
-    //cardClearFile(card, (char*)FILE_NAME);
+      cardBackupData(doc, data, (char*)FILE_NAME);
   }
+
+  if(success && status.cardAvailable)
+    cardClearFile((char*)FILE_NAME);
   
   doc.clear();
-  DBG_PRINTLN("End...");
-  DBG_FLUSH();
 
   setSleepTimer(data.batteryLevel);
+  sps30_stop_measurement();
+  log("End of main loop...");
+  DBG_FLUSH();
+  //ArduinoOTA.handle();
+  //delay(5000);
   esp_deep_sleep_start();
 }
 
@@ -169,7 +178,7 @@ void measure(measurments &data, RTC_DS3231 &rtc, Adafruit_BME680 &bme)
     data.pressure = NAN;
   }
   data.batteryLevel = readBatteryLevel();
-  data.time = (status.rtcAvailable)? RTCGetString(rtc) : (char*)"";
+  data.time = (status.rtcAvailable)? RTCGetString() : (char*)"";
   sps30ReadNewData(data.spsData);
 }
 
@@ -182,28 +191,28 @@ int setSleepTimer(float batteryLevel)
 {
   if(batteryLevel == 0 || batteryLevel == NAN)
   {
-    DBG_PRINTLN("Level sleep: 0");
+    log("Level sleep: 0");
     esp_sleep_enable_timer_wakeup(uS_TO_S_FACTOR * TIME_TO_SLEEP_DEFAULT);
 
     return 0;
   }
   else if(batteryLevel >= high_level)
   {
-    DBG_PRINTLN("Level sleep: 1");
+    log((char*)"Level sleep: 1");
     esp_sleep_enable_timer_wakeup(uS_TO_S_FACTOR * TIME_TO_SLEEP_HIGH);
 
     return 1;
   }
   else if(batteryLevel < high_level && batteryLevel >= medium_level)
   {
-    DBG_PRINTLN("Level sleep: 2");
+    log("Level sleep: 2");
     esp_sleep_enable_timer_wakeup(uS_TO_S_FACTOR * TIME_TO_SLEEP_MEDIUM);
 
     return 2;
   }
   else 
   {
-    DBG_PRINTLN("Level sleep: 3");
+    log("Level sleep: 3");
     esp_sleep_enable_timer_wakeup(uS_TO_S_FACTOR * TIME_TO_SLEEP_LOW);
 
     return 3;

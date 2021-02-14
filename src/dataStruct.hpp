@@ -5,12 +5,12 @@
 
 struct measurments
 {
-  float humidity;
+  float humidity = NAN;
   char* time;
-  float batteryLevel;
-  float temperature;
-  float pressure;
-  float altitude;
+  float batteryLevel = NAN;
+  float temperature = NAN;
+  float pressure = NAN;
+  float altitude = NAN;
   sps30_measurement spsData;
 };
 

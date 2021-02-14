@@ -8,7 +8,7 @@
 
 #define BAUD_RATE 115200
 #define uS_TO_S_FACTOR (uint64_t)1000000
-#define TIME_TO_SLEEP_DEFAULT (uint64_t)30
+#define TIME_TO_SLEEP_DEFAULT (uint64_t)60
 #define TIME_TO_SLEEP_HIGH (uint64_t)60
 #define TIME_TO_SLEEP_MEDIUM (uint64_t)1800
 #define TIME_TO_SLEEP_LOW (uint64_t)3600
@@ -23,6 +23,9 @@
 #define JSON_DOC_SIZE_STATUS 192
 #define MQTT_PACKET_SIZE 512
 #define FILE_NAME "/station/station_data.json"
+#define LOG_TOPIC "esp32/log"
+#define DATA_TOPIC "esp32/data"
+#define REPORT_TOPIC "esp32/report"
 
 static const char* ssid = "";
 static const char* passwd = "";

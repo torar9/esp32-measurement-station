@@ -2,20 +2,18 @@
 
 void callback(char* topic, byte* message, unsigned int length)
 {
-  DBG_PRINTLN(F("Callback function"));
+  log("Callback function activated");
 }
 
-bool uploadData(PubSubClient& mqClient,DynamicJsonDocument &doc, char* topic)
+bool uploadData(DynamicJsonDocument &doc, char* topic)
 {
   if(!doc.isNull())
   {
-    DBG_PRINTLN("Doc not null");
     JsonArray arr = doc["logs"];
     for(auto e : arr)
     {
       String output;
-      serializeJsonPretty(e, output);
-      DBG_PRINTLN(output);
+      serializeJson(e, output);
       if(!mqClient.publish(topic, output.c_str()))
         return false;
     }
@@ -26,7 +24,7 @@ bool uploadData(PubSubClient& mqClient,DynamicJsonDocument &doc, char* topic)
   return false;
 }
 
-bool reportProblem(PubSubClient& mqClient, statusStruct& status, char* topic)
+bool reportProblem(statusStruct& status, char* topic)
 {
   DynamicJsonDocument doc(JSON_DOC_SIZE_STATUS);
 
@@ -45,4 +43,14 @@ bool reportProblem(PubSubClient& mqClient, statusStruct& status, char* topic)
 
   doc.clear();
   return false;
+}
+
+void log(const char* message, bool newLine, const char* topic)
+{
+  #if DEBUG
+    if(mqClient.connected())
+    mqClient.publish(topic, message);
+
+    (newLine)? DBG_PRINTLN(message) : DBG_PRINT(message);
+  #endif
 }

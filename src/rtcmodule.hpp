@@ -6,7 +6,9 @@
 #include <string>
 #include <RTClib.h>
 
-void RTCSetTimeOnline(RTC_DS3231 &rtc, tm &timeStr);
-char* RTCGetString(RTC_DS3231 &rtc);
+extern RTC_DS3231 rtc;
+
+void RTCSetTimeOnline(tm &timeStr);
+char* RTCGetString();
 
 #endif
