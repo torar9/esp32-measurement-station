@@ -26,6 +26,8 @@
 #define LOG_TOPIC "esp32/log"
 #define DATA_TOPIC "esp32/data"
 #define REPORT_TOPIC "esp32/report"
+#define MQTT_PUB_QOS 2
+#define MQTT_SUB_QOS 1
 
 static const char* ssid = "";
 static const char* passwd = "";
@@ -42,61 +44,5 @@ static const int daylightOffset_sec = 3600;
 static const int high_level = 70;
 static const int medium_level = 40;
 static const int low_level = 20;
-
-inline void setupWifi()
-{
-  DBG_PRINTLN(F("Connecting to WiFi..."));
-  WiFi.mode(WIFI_MODE_STA);
-  WiFi.setHostname(hostname);
-  WiFi.setAutoReconnect(true);
-  WiFi.begin(ssid, passwd);
-  WiFi.waitForConnectResult();
-
-  if(WiFi.status() != WL_CONNECTED)
-  {
-    DBG_PRINTLN(F("Unable to connect to wifi"));
-  }
-  else
-  {
-    DBG_PRINTLN(F("Connected to WiFi."));
-    DBG_PRINT(F("IPv4 address: "));
-    DBG_PRINTLN(WiFi.localIP());
-  }
-}
-
-inline void setupOTA()
-{
-  ArduinoOTA
-    .onStart([]()
-    {
-      String type;
-      if (ArduinoOTA.getCommand() == U_FLASH)
-        type = "sketch";
-      else // U_SPIFFS
-        type = "filesystem";
-
-      // NOTE: if updating SPIFFS this would be the place to unmount SPIFFS using SPIFFS.end()
-      DBG_PRINTLN("Start updating " + type);
-    })
-    .onEnd([]()
-    {
-      Serial.println("\nEnd");
-    })
-    .onProgress([](unsigned int progress, unsigned int total)
-    {
-      Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
-    })
-    .onError([](ota_error_t error)
-    {
-      Serial.printf("Error[%u]: ", error);
-      if (error == OTA_AUTH_ERROR) DBG_PRINTLN(F("Auth Failed"));
-      else if (error == OTA_BEGIN_ERROR) DBG_PRINTLN(F("Begin Failed"));
-      else if (error == OTA_CONNECT_ERROR) DBG_PRINTLN(F("Connect Failed"));
-      else if (error == OTA_RECEIVE_ERROR) DBG_PRINTLN(F("Receive Failed"));
-      else if (error == OTA_END_ERROR) DBG_PRINTLN(F("End Failed"));
-    });
-
-  ArduinoOTA.begin();
-}
 
 #endif

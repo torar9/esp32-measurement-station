@@ -14,7 +14,7 @@ bool uploadData(DynamicJsonDocument &doc, char* topic)
     {
       String output;
       serializeJson(e, output);
-      if(!mqClient.publish(topic, output.c_str()))
+      if(!mqClient.publish(topic, output.c_str(), MQTT_PUB_QOS))
         return false;
     }
 
@@ -33,9 +33,9 @@ bool reportProblem(statusStruct& status, char* topic)
   if(!doc.isNull())
   {
     String output;
-    serializeJsonPretty(doc, output);
+    serializeJson(doc, output);
 
-    bool result = mqClient.publish(topic, output.c_str());
+    bool result = mqClient.publish(topic, output.c_str(), MQTT_PUB_QOS);
 
     doc.clear();
     return result;
@@ -49,7 +49,10 @@ void log(const char* message, bool newLine, const char* topic)
 {
   #if DEBUG
     if(mqClient.connected())
-    mqClient.publish(topic, message);
+    {
+      if(!mqClient.publish(topic, message, MQTT_PUB_QOS))
+        DBG_PRINTLN("Failed to send log message...");
+    }
 
     (newLine)? DBG_PRINTLN(message) : DBG_PRINT(message);
   #endif

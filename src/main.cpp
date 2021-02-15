@@ -1,6 +1,6 @@
 #include <Adafruit_BME680.h>
 #include <PubSubClient.h>
-#include <ArduinoJson.h>
+#include <ArduinoJson.hpp>
 #include <ArduinoOTA.h>
 #include <Arduino.h>
 #include <WiFi.h>
@@ -21,6 +21,8 @@ Adafruit_BME680 bme;
 SDFS card(SD);
 statusStruct status;
 
+void setupWifi();
+void setupOTA();
 void measure(measurments &data, RTC_DS3231 &rtc, Adafruit_BME680 &bme);
 double readBatteryLevel();
 int setSleepTimer(float batteryLevel);
@@ -33,8 +35,8 @@ void setup()
   setupWifi();
   if(WiFi.status() == WL_CONNECTED)
   {
-    ArduinoOTA.setHostname(hostname);
-    setupOTA();
+    //ArduinoOTA.setHostname(hostname);
+    //setupOTA();
     //ArduinoOTA.begin();
 
     mqClient.setServer(mqtt_server, mqtt_port);
@@ -111,6 +113,15 @@ void loop()
   log("Starting to measure...");
   measure(data, rtc, bme);
 
+  if(status.cardAvailable && card.exists((char*)FILE_NAME))
+  {
+    log("Trying to load data from file...");
+    cardLoadJSONFromFile(doc, (char*)FILE_NAME);
+  }
+  serializeJsonPretty(doc, Serial);
+  addEventToJSON(doc, data);
+  serializeJsonPretty(doc, Serial);
+
   if(WiFi.status() == WL_CONNECTED)
   {
     if(!mqClient.connected())
@@ -123,18 +134,9 @@ void loop()
     else
     {
       upload:
-        if(status.cardAvailable && card.exists((char*)FILE_NAME))
-        {
-          log("Trying to load data from file...");
-          cardLoadJSONFromFile(doc, (char*)FILE_NAME);
-        }
-        
-        addEventToJSON(doc, data);
-
         log("Uploading data...");
         success = uploadData(doc, (char*)DATA_TOPIC);
 
-        //reportProblem(mqClient, status, (char*)"esp32/jsonStatus");
         if(status.problemOccured)
           reportProblem(status, (char*)REPORT_TOPIC);
     }
@@ -143,8 +145,7 @@ void loop()
   if(!success && status.cardAvailable)
   {
     log("Failed to upload... saving data to SD card");
-    if(status.cardAvailable)
-      cardBackupData(doc, data, (char*)FILE_NAME);
+    cardWriteJSONToFile(doc, (char*)FILE_NAME);
   }
 
   if(success && status.cardAvailable)
@@ -157,8 +158,65 @@ void loop()
   log("End of main loop...");
   DBG_FLUSH();
   //ArduinoOTA.handle();
-  //delay(5000);
+  delay(5000);
+  WiFi.disconnect();
   esp_deep_sleep_start();
+}
+
+void setupWifi()
+{
+  DBG_PRINTLN(F("Connecting to WiFi..."));
+  WiFi.mode(WIFI_MODE_STA);
+  WiFi.setHostname(hostname);
+  WiFi.setAutoReconnect(true);
+  WiFi.begin(ssid, passwd);
+  WiFi.waitForConnectResult();
+
+  if(WiFi.status() != WL_CONNECTED)
+  {
+    DBG_PRINTLN(F("Unable to connect to wifi"));
+  }
+  else
+  {
+    DBG_PRINTLN(F("Connected to WiFi."));
+    DBG_PRINT(F("IPv4 address: "));
+    DBG_PRINTLN(WiFi.localIP());
+  }
+}
+
+void setupOTA()
+{
+  ArduinoOTA
+    .onStart([]()
+    {
+      String type;
+      if (ArduinoOTA.getCommand() == U_FLASH)
+        type = "sketch";
+      else // U_SPIFFS
+        type = "filesystem";
+
+      // NOTE: if updating SPIFFS this would be the place to unmount SPIFFS using SPIFFS.end()
+      DBG_PRINTLN("Start updating " + type);
+    })
+    .onEnd([]()
+    {
+      Serial.println("\nEnd");
+    })
+    .onProgress([](unsigned int progress, unsigned int total)
+    {
+      Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
+    })
+    .onError([](ota_error_t error)
+    {
+      Serial.printf("Error[%u]: ", error);
+      if (error == OTA_AUTH_ERROR) DBG_PRINTLN(F("Auth Failed"));
+      else if (error == OTA_BEGIN_ERROR) DBG_PRINTLN(F("Begin Failed"));
+      else if (error == OTA_CONNECT_ERROR) DBG_PRINTLN(F("Connect Failed"));
+      else if (error == OTA_RECEIVE_ERROR) DBG_PRINTLN(F("Receive Failed"));
+      else if (error == OTA_END_ERROR) DBG_PRINTLN(F("End Failed"));
+    });
+
+  ArduinoOTA.begin();
 }
 
 void measure(measurments &data, RTC_DS3231 &rtc, Adafruit_BME680 &bme)
