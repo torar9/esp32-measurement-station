@@ -3,7 +3,6 @@
 
 #include <Arduino.h>
 #include <time.h>
-#include <string>
 #include <RTClib.h>
 
 extern RTC_DS3231 rtc;
