@@ -92,13 +92,3 @@ bool cardClearFile(char* fileName)
         return card.remove(fileName);
     else return false;
 }
-
-bool cardBackupData(DynamicJsonDocument &doc, measurments &data, char* filename)
-{
-  cardLoadJSONFromFile(doc, filename);
-  log("Printing doc:");
-
-  addEventToJSON(doc, data);
-  
-  return cardWriteJSONToFile(doc, filename);
-}

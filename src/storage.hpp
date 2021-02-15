@@ -6,7 +6,6 @@
 #include <SPI.h>
 #include <SD.h>
 #include <FS.h>
-#include <PubSubClient.h>
 #include "dataStruct.hpp"
 #include "statstruct.hpp"
 
@@ -18,6 +17,5 @@ bool cardLoadJSONFromFile(DynamicJsonDocument &doc, char* fileName);
 void addEventToJSON(DynamicJsonDocument &doc, measurments &event);
 void addEventToJSON(DynamicJsonDocument &doc, statusStruct &status);
 bool cardClearFile(char* fileName);
-bool cardBackupData(DynamicJsonDocument &doc, measurments &data, char* filename);
 
 #endif
