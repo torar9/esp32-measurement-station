@@ -29,9 +29,11 @@ int setSleepTimer(float batteryLevel);
 
 void setup() 
 {
+  setCpuFrequencyMhz(80);
   delay(2000);
   DBG_SERIAL_BEGIN(BAUD_RATE);
 
+  btStop();
   setupWifi();
   if(WiFi.status() == WL_CONNECTED)
   {
