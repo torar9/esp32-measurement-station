@@ -1,6 +1,6 @@
 #include <Adafruit_BME680.h>
-#include <PubSubClient.h>
 #include <ArduinoJson.hpp>
+#include <PubSubClient.h>
 #include <ArduinoOTA.h>
 #include <Arduino.h>
 #include <WiFi.h>
@@ -27,7 +27,7 @@ void measure(measurments &data, RTC_DS3231 &rtc, Adafruit_BME680 &bme);
 double readBatteryLevel();
 int setSleepTimer(float batteryLevel);
 
-void setup() 
+void setup()
 {
   setCpuFrequencyMhz(80);
   delay(2000);
