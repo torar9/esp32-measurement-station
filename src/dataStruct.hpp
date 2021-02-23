@@ -11,6 +11,7 @@ struct measurments
   float temperature = NAN;
   float pressure = NAN;
   float altitude = NAN;
+  uint32_t gasResistance = 0;
   sps30_measurement spsData;
 };
 

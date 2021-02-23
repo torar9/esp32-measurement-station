@@ -63,6 +63,7 @@ void addEventToJSON(DynamicJsonDocument &doc, measurments &event)
     log["humidity"] = event.humidity;
     log["pressure"] = event.pressure;
     log["time"] = event.time;
+    log["gasResistance"] = event.gasResistance;
     log["temperature"] = event.temperature;
     log["batteryLevel"] = event.batteryLevel;
     log["mc_10p0"] = event.spsData.mc_10p0;

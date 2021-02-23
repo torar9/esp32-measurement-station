@@ -79,9 +79,24 @@ void setup()
   if(!bme.begin())
   {
     log("Unable to init BME680!");
-    status.bmeAvailable = false;
-    status.problemOccured = true;
+    bmeError:
+      status.bmeAvailable = false;
+      status.problemOccured = true;
   }
+  else
+  {
+    if(!bme.setTemperatureOversampling(BME680_OS_8X))
+      goto bmeError;
+    if(!bme.setHumidityOversampling(BME680_OS_2X))
+      goto bmeError;
+    if(!bme.setPressureOversampling(BME680_OS_4X))
+      goto bmeError;
+    if(!bme.setIIRFilterSize(BME680_FILTER_SIZE_3))
+      goto bmeError;
+    if(!bme.setGasHeater(320, 150))
+      goto bmeError;
+  }
+  
 
   if(!rtc.begin())
   {
@@ -227,8 +242,9 @@ void measure(measurments &data, RTC_DS3231 &rtc, Adafruit_BME680 &bme)
   {
     data.temperature = bme.readTemperature();
     data.humidity = bme.readHumidity();
-    data.altitude = bme.readAltitude(1013.25);
+    data.altitude = bme.readAltitude(SEA_LEVEL_PRESSURE);
     data.pressure = bme.readPressure() / 100.0;
+    data.gasResistance = bme.readGas();
   }
   else
   {
