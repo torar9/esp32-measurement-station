@@ -59,32 +59,32 @@ void addEventToJSON(DynamicJsonDocument &doc, measurments &event)
     }
     JsonObject log = arr.createNestedObject();
     
-    log["altitude"] = event.altitude;
-    log["humidity"] = event.humidity;
-    log["pressure"] = event.pressure;
-    log["time"] = event.time;
-    log["gasResistance"] = event.gasResistance;
-    log["temperature"] = event.temperature;
-    log["batteryLevel"] = event.batteryLevel;
-    log["mc_10p0"] = event.spsData.mc_10p0;
-    log["mc_1p0"] = event.spsData.mc_1p0;
-    log["mc_2p5"] = event.spsData.mc_2p5;
-    log["mc_4p0"] = event.spsData.mc_4p0;
-    log["nc_0p5"] = event.spsData.nc_0p5;
-    log["nc_10p0"] = event.spsData.nc_10p0;
-    log["nc_1p0"] = event.spsData.nc_1p0;
-    log["nc_2p5"] = event.spsData.nc_2p5;
-    log["nc_4p0"] = event.spsData.nc_4p0;
-    log["typical_particle_size"] = event.spsData.typical_particle_size;
+    log[F("altitude")] = event.altitude;
+    log[F("humidity")] = event.humidity;
+    log[F("pressure")] = event.pressure;
+    log[F("time")] = event.time;
+    log[F("gasResistance")] = event.gasResistance;
+    log[F("temperature")] = event.temperature;
+    log[F("batteryLevel")] = event.batteryLevel;
+    log[F("mc_10p0")] = event.spsData.mc_10p0;
+    log[F("mc_1p0")] = event.spsData.mc_1p0;
+    log[F("mc_2p5")] = event.spsData.mc_2p5;
+    log[F("mc_4p0")] = event.spsData.mc_4p0;
+    log[F("nc_0p5")] = event.spsData.nc_0p5;
+    log[F("nc_10p0")] = event.spsData.nc_10p0;
+    log[F("nc_1p0")] = event.spsData.nc_1p0;
+    log[F("nc_2p5")] = event.spsData.nc_2p5;
+    log[F("nc_4p0")] = event.spsData.nc_4p0;
+    log[F("typical_particle_size")] = event.spsData.typical_particle_size;
 }
 
 void addEventToJSON(DynamicJsonDocument &doc, statusStruct &status)
 {
-    doc["cardAvailable"] = status.cardAvailable;
-    doc["bmeAvailable"] = status.bmeAvailable;
-    doc["rtcAvailable"] = status.rtcAvailable;
-    doc["spsAvailable"] = status.spsAvailable;
-    doc["problemOccured"] = status.problemOccured;
+    doc[F("cardAvailable")] = status.cardAvailable;
+    doc[F("bmeAvailable")] = status.bmeAvailable;
+    doc[F("rtcAvailable")] = status.rtcAvailable;
+    doc[F("spsAvailable")] = status.spsAvailable;
+    doc[F("problemOccured")] = status.problemOccured;
 }
 
 bool cardClearFile(char* fileName)
