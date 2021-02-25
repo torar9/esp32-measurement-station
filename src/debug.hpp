@@ -1,6 +1,13 @@
 #ifndef DEBUG_HPP
 #define DEBUG_HPP
 
+/** \file debug.hpp
+ * This file is for debug purposes.
+ */
+
+/**
+ * Turns on or off debug logs in serial communication.
+ */
 #define DEBUG 1
 #if DEBUG
   #define DBG_SERIAL_BEGIN(x) Serial.begin(x);

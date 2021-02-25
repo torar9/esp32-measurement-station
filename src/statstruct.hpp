@@ -1,13 +1,16 @@
 #ifndef STATSTRUCT_HPP
 #define STATSTRUCT_HPP
 
+/** \file statstruct.hpp
+ * This structure is used to hold information about availability of sensor or module.
+ */
 struct statusStruct
 {
-    bool cardAvailable = true;
-    bool bmeAvailable = true;
-    bool rtcAvailable = true;
-    bool spsAvailable = true;
-    bool problemOccured = false;
+    bool cardAvailable = true; /**< Whetever or not SD card is available*/
+    bool bmeAvailable = true; /**< Whetever or not BME680 is available*/
+    bool rtcAvailable = true; /**< Whetever or not RTC module is available*/
+    bool spsAvailable = true; /**< Whetever or not is sps30 sensor is available*/
+    bool problemOccured = false; /**< Whetever or not problem occured*/
 };
 
 #endif

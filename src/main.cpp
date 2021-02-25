@@ -1,12 +1,10 @@
 #include <Adafruit_BME680.h>
 #include <ArduinoJson.hpp>
 #include <PubSubClient.h>
-#include <ArduinoOTA.h>
 #include <Arduino.h>
 #include <WiFi.h>
 #include <Wire.h>
 #include "communication.hpp"
-#include "dataStruct.hpp"
 #include "statstruct.hpp"
 #include "rtcmodule.hpp"
 #include "storage.hpp"
@@ -14,19 +12,49 @@
 #include "debug.hpp"
 #include "sps30.hpp"
 
-WiFiClient wifiClient;
-PubSubClient mqClient(wifiClient);
-RTC_DS3231 rtc;
-Adafruit_BME680 bme;
-SDFS card(SD);
-statusStruct status;
+/** \file main.cpp
+ * Main file
+ */
 
+WiFiClient wifiClient; /**< Wi-Fi client */
+PubSubClient mqClient(wifiClient); /**< MQTT client */
+RTC_DS3231 rtc; /**< RTC module */
+Adafruit_BME680 bme; /**< BME680 sensor */
+SDFS card(SD); /**< SD card module */
+statusStruct status; /**< Struct that contains availability status for each sensor or module */
+
+/**
+ * Is used to attempt to establish Wi-Fi connection
+ */
 void setupWifi();
-void setupOTA();
-void measure(measurments &data, RTC_DS3231 &rtc, Adafruit_BME680 &bme);
+
+/**
+ * Get reading from all available sensors and modules.
+ * @param data Data Struct in which measured data is stored
+ * @param rtc rtc module
+ * @param bme BME680 sensor
+ */
+void measure(measurements &data, RTC_DS3231 &rtc, Adafruit_BME680 &bme);
+
+/**
+ * Read battery level
+ * @return battery level in %
+ */
 double readBatteryLevel();
+
+/**
+ * Determine and set the time to put station to sleep
+ * @param batteryLevel battery level in %
+ * @return Sleep mode
+ */
 int setSleepTimer(float batteryLevel);
 
+
+/**
+ * Setup function
+ * Is used to setup and inicialize sensors and modules and MCU.
+ * Establish Wi-Fi connection and connection to MQTT broker
+ */
 void setup()
 {
   setCpuFrequencyMhz(80);
@@ -37,10 +65,6 @@ void setup()
   setupWifi();
   if(WiFi.status() == WL_CONNECTED)
   {
-    //ArduinoOTA.setHostname(hostname);
-    //setupOTA();
-    //ArduinoOTA.begin();
-
     mqClient.setServer(mqtt_server, mqtt_port);
     mqClient.setCallback(callback);
     mqClient.setBufferSize(MQTT_PACKET_SIZE);
@@ -74,12 +98,12 @@ void setup()
     status.spsAvailable = false;
     status.problemOccured = true;
   }
-  else sps30_stop_measurement(); //sps30_start_measurement();//
+  else sps30_start_measurement();//sps30_stop_measurement();
 
   if(!bme.begin())
   {
-    log("Unable to init BME680!");
     bmeError:
+      log("Unable to init BME680!");
       status.bmeAvailable = false;
       status.problemOccured = true;
   }
@@ -120,11 +144,14 @@ void setup()
   //mqClient.subscribe((char*)"esp32/debug");
 }
 
+/**
+ * Main loop function
+ */
 void loop() 
 {
   bool success = false;
   DynamicJsonDocument doc(JSON_DOC_SIZE_MEASUREMENTS);
-  measurments data;
+  measurements data;
 
   log("Main loop...");
   log("Starting to measure...");
@@ -201,42 +228,7 @@ void setupWifi()
   }
 }
 
-void setupOTA()
-{
-  ArduinoOTA
-    .onStart([]()
-    {
-      String type;
-      if (ArduinoOTA.getCommand() == U_FLASH)
-        type = "sketch";
-      else // U_SPIFFS
-        type = "filesystem";
-
-      // NOTE: if updating SPIFFS this would be the place to unmount SPIFFS using SPIFFS.end()
-      DBG_PRINTLN("Start updating " + type);
-    })
-    .onEnd([]()
-    {
-      Serial.println("\nEnd");
-    })
-    .onProgress([](unsigned int progress, unsigned int total)
-    {
-      Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
-    })
-    .onError([](ota_error_t error)
-    {
-      Serial.printf("Error[%u]: ", error);
-      if (error == OTA_AUTH_ERROR) DBG_PRINTLN(F("Auth Failed"));
-      else if (error == OTA_BEGIN_ERROR) DBG_PRINTLN(F("Begin Failed"));
-      else if (error == OTA_CONNECT_ERROR) DBG_PRINTLN(F("Connect Failed"));
-      else if (error == OTA_RECEIVE_ERROR) DBG_PRINTLN(F("Receive Failed"));
-      else if (error == OTA_END_ERROR) DBG_PRINTLN(F("End Failed"));
-    });
-
-  ArduinoOTA.begin();
-}
-
-void measure(measurments &data, RTC_DS3231 &rtc, Adafruit_BME680 &bme)
+void measure(measurements &data, RTC_DS3231 &rtc, Adafruit_BME680 &bme)
 {
   if(status.bmeAvailable)
   {

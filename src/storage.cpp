@@ -50,7 +50,7 @@ bool cardLoadJSONFromFile(DynamicJsonDocument &doc, char* fileName)
     return true;
 }
 
-void addEventToJSON(DynamicJsonDocument &doc, measurments &event)
+void addEventToJSON(DynamicJsonDocument &doc, measurements &event)
 {
     JsonArray arr = doc["logs"].as<JsonArray>();
     if(arr.isNull())
