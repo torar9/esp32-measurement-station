@@ -53,8 +53,8 @@ int setSleepTimer(float batteryLevel);
 
 /**
  * Setup function
- * Is used to setup and inicialize sensors and modules and MCU.
- * Establish Wi-Fi connection and connection to MQTT broker
+ * Is used to setup pin modes, MCU, and inicialize sensors and modules.
+ * Establish Wi-Fi connection and connection to MQTT broker.
  */
 void setup()
 {
@@ -66,10 +66,10 @@ void setup()
   setupWifi();
   if(WiFi.status() == WL_CONNECTED)
   {
-    mqClient.setServer(mqtt_server, mqtt_port);
+    mqClient.setServer(MQTT_SERVER, MQTT_PORT);
     mqClient.setCallback(callback);
     mqClient.setBufferSize(MQTT_PACKET_SIZE);
-    mqClient.connect(mqttID);
+    mqClient.connect(MQTT_ID);
   }
 
   pinMode(BATTERY_PIN, INPUT);
@@ -134,7 +134,7 @@ void setup()
   {
     struct tm timeStr;
 
-    configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
+    configTime(gmtOffset_sec, daylightOffset_sec, NTP_SERVER);
     getLocalTime(&timeStr);
 
     RTCSetTimeOnline(timeStr);
@@ -173,7 +173,7 @@ void loop()
     {
       log("Recconecting MQTT client");
       
-      if(mqClient.connect(mqttID))
+      if(mqClient.connect(MQTT_ID))
         goto upload;
     }
     else
@@ -211,9 +211,9 @@ void setupWifi()
 {
   DBG_PRINTLN(F("Connecting to WiFi..."));
   WiFi.mode(WIFI_MODE_STA);
-  WiFi.setHostname(hostname);
+  WiFi.setHostname(HOSTNAME);
   WiFi.setAutoReconnect(true);
-  WiFi.begin(ssid, passwd);
+  WiFi.begin(SSID, WIFI_PASSWD);
   WiFi.waitForConnectResult();
 
   if(WiFi.status() != WL_CONNECTED)
@@ -264,14 +264,14 @@ int setSleepTimer(float batteryLevel)
 
     return 0;
   }
-  else if(batteryLevel >= high_level)
+  else if(batteryLevel >= HIGH_LEVEL)
   {
     log((char*)"Level sleep: 1");
     esp_sleep_enable_timer_wakeup(uS_TO_S_FACTOR * TIME_TO_SLEEP_HIGH);
 
     return 1;
   }
-  else if(batteryLevel < high_level && batteryLevel >= medium_level)
+  else if(batteryLevel < HIGH_LEVEL && batteryLevel >= MEDIUM_LEVEL)
   {
     log("Level sleep: 2");
     esp_sleep_enable_timer_wakeup(uS_TO_S_FACTOR * TIME_TO_SLEEP_MEDIUM);
