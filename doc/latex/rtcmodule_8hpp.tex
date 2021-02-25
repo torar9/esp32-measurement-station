@@ -1,0 +1,72 @@
+\hypertarget{rtcmodule_8hpp}{}\doxysection{src/rtcmodule.hpp File Reference}
+\label{rtcmodule_8hpp}\index{src/rtcmodule.hpp@{src/rtcmodule.hpp}}
+
+
+Function for working with R\+TC module.  
+
+
+{\ttfamily \#include $<$Arduino.\+h$>$}\newline
+{\ttfamily \#include $<$time.\+h$>$}\newline
+{\ttfamily \#include $<$R\+T\+Clib.\+h$>$}\newline
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{rtcmodule_8hpp_ad4010fccd2e5c10ed97ea64156f75a7f}{R\+T\+C\+Set\+Time\+Online}} (tm \&time\+Str)
+\begin{DoxyCompactList}\small\item\em Set time in R\+TC module from B\+TP server. \end{DoxyCompactList}\item 
+char $\ast$ \mbox{\hyperlink{rtcmodule_8hpp_a590a07b07374dd363315a33cd2419a6d}{R\+T\+C\+Get\+String}} ()
+\begin{DoxyCompactList}\small\item\em Get string representation of time in \char`\"{}yyyy-\/\+M\+M-\/dd H\+H\+:mm\+:ss\char`\"{} format. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+R\+T\+C\+\_\+\+D\+S3231 \mbox{\hyperlink{rtcmodule_8hpp_afa042f998806fcdedab1794cebbeaad3}{rtc}}
+\begin{DoxyCompactList}\small\item\em Extern R\+TC module. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Function for working with R\+TC module. 
+
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{rtcmodule_8hpp_a590a07b07374dd363315a33cd2419a6d}\label{rtcmodule_8hpp_a590a07b07374dd363315a33cd2419a6d}} 
+\index{rtcmodule.hpp@{rtcmodule.hpp}!RTCGetString@{RTCGetString}}
+\index{RTCGetString@{RTCGetString}!rtcmodule.hpp@{rtcmodule.hpp}}
+\doxysubsubsection{\texorpdfstring{RTCGetString()}{RTCGetString()}}
+{\footnotesize\ttfamily char$\ast$ R\+T\+C\+Get\+String (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Get string representation of time in \char`\"{}yyyy-\/\+M\+M-\/dd H\+H\+:mm\+:ss\char`\"{} format. 
+
+\begin{DoxyReturn}{Returns}
+string representation of time 
+\end{DoxyReturn}
+\mbox{\Hypertarget{rtcmodule_8hpp_ad4010fccd2e5c10ed97ea64156f75a7f}\label{rtcmodule_8hpp_ad4010fccd2e5c10ed97ea64156f75a7f}} 
+\index{rtcmodule.hpp@{rtcmodule.hpp}!RTCSetTimeOnline@{RTCSetTimeOnline}}
+\index{RTCSetTimeOnline@{RTCSetTimeOnline}!rtcmodule.hpp@{rtcmodule.hpp}}
+\doxysubsubsection{\texorpdfstring{RTCSetTimeOnline()}{RTCSetTimeOnline()}}
+{\footnotesize\ttfamily void R\+T\+C\+Set\+Time\+Online (\begin{DoxyParamCaption}\item[{tm \&}]{time\+Str }\end{DoxyParamCaption})}
+
+
+
+Set time in R\+TC module from B\+TP server. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em time\+Str} & time struct \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{rtcmodule_8hpp_afa042f998806fcdedab1794cebbeaad3}\label{rtcmodule_8hpp_afa042f998806fcdedab1794cebbeaad3}} 
+\index{rtcmodule.hpp@{rtcmodule.hpp}!rtc@{rtc}}
+\index{rtc@{rtc}!rtcmodule.hpp@{rtcmodule.hpp}}
+\doxysubsubsection{\texorpdfstring{rtc}{rtc}}
+{\footnotesize\ttfamily R\+T\+C\+\_\+\+D\+S3231 rtc\hspace{0.3cm}{\ttfamily [extern]}}
+
+
+
+Extern R\+TC module. 
+
+Extern R\+TC module. 

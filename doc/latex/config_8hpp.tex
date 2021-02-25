@@ -1,0 +1,170 @@
+\hypertarget{config_8hpp}{}\doxysection{src/config.hpp File Reference}
+\label{config_8hpp}\index{src/config.hpp@{src/config.hpp}}
+
+
+This file holds config values such as server ip, delay values, pin values etc.  
+
+
+{\ttfamily \#include $<$Wi\+Fi.\+h$>$}\newline
+{\ttfamily \#include $<$Pub\+Sub\+Client.\+h$>$}\newline
+{\ttfamily \#include $<$Arduino\+O\+T\+A.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}debug.\+hpp\char`\"{}}\newline
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{config_8hpp_ad4455691936f92fdd6c37566fc58ba1f}\label{config_8hpp_ad4455691936f92fdd6c37566fc58ba1f}} 
+\#define \mbox{\hyperlink{config_8hpp_ad4455691936f92fdd6c37566fc58ba1f}{B\+A\+U\+D\+\_\+\+R\+A\+TE}}~115200
+\begin{DoxyCompactList}\small\item\em Baud rate for serial communication. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{config_8hpp_a628c12ff2a1ac4b14a41f021723b2558}\label{config_8hpp_a628c12ff2a1ac4b14a41f021723b2558}} 
+\#define \mbox{\hyperlink{config_8hpp_a628c12ff2a1ac4b14a41f021723b2558}{u\+S\+\_\+\+T\+O\+\_\+\+S\+\_\+\+F\+A\+C\+T\+OR}}~(uint64\+\_\+t)1000000
+\begin{DoxyCompactList}\small\item\em Holds amount of uS in second. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{config_8hpp_a388c0e6eee5b6d84786f32040af5c081}\label{config_8hpp_a388c0e6eee5b6d84786f32040af5c081}} 
+\#define \mbox{\hyperlink{config_8hpp_a388c0e6eee5b6d84786f32040af5c081}{T\+I\+M\+E\+\_\+\+T\+O\+\_\+\+S\+L\+E\+E\+P\+\_\+\+D\+E\+F\+A\+U\+LT}}~(uint64\+\_\+t)60
+\begin{DoxyCompactList}\small\item\em Default amount of seconds for station to sleep. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{config_8hpp_ae12c0240e8591bc6512d803f0b15289e}\label{config_8hpp_ae12c0240e8591bc6512d803f0b15289e}} 
+\#define \mbox{\hyperlink{config_8hpp_ae12c0240e8591bc6512d803f0b15289e}{T\+I\+M\+E\+\_\+\+T\+O\+\_\+\+S\+L\+E\+E\+P\+\_\+\+H\+I\+GH}}~(uint64\+\_\+t)60
+\begin{DoxyCompactList}\small\item\em Amount of seconds for station to sleep when battery level is high. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{config_8hpp_a9ac8f2c054b74133d719b754fceec4f7}\label{config_8hpp_a9ac8f2c054b74133d719b754fceec4f7}} 
+\#define \mbox{\hyperlink{config_8hpp_a9ac8f2c054b74133d719b754fceec4f7}{T\+I\+M\+E\+\_\+\+T\+O\+\_\+\+S\+L\+E\+E\+P\+\_\+\+M\+E\+D\+I\+UM}}~(uint64\+\_\+t)1800
+\begin{DoxyCompactList}\small\item\em Amount of seconds for station to sleep when battery level is medium. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{config_8hpp_acc92582d30435d8418c69c13647fb36d}\label{config_8hpp_acc92582d30435d8418c69c13647fb36d}} 
+\#define \mbox{\hyperlink{config_8hpp_acc92582d30435d8418c69c13647fb36d}{T\+I\+M\+E\+\_\+\+T\+O\+\_\+\+S\+L\+E\+E\+P\+\_\+\+L\+OW}}~(uint64\+\_\+t)3600
+\begin{DoxyCompactList}\small\item\em Amount of seconds for station to sleep when battery level is low. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{config_8hpp_a5f4a53177275806e5c1832a76ce5b7da}\label{config_8hpp_a5f4a53177275806e5c1832a76ce5b7da}} 
+\#define \mbox{\hyperlink{config_8hpp_a5f4a53177275806e5c1832a76ce5b7da}{L\+O\+O\+P\+\_\+\+D\+E\+L\+AY}}~10000
+\begin{DoxyCompactList}\small\item\em Loop delay. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{config_8hpp_abfae246a91df54e807874aa8680beccb}\label{config_8hpp_abfae246a91df54e807874aa8680beccb}} 
+\#define \mbox{\hyperlink{config_8hpp_abfae246a91df54e807874aa8680beccb}{D\+H\+T\+\_\+\+T\+Y\+PE}}~D\+H\+T22
+\begin{DoxyCompactList}\small\item\em Type of D\+HT senzor. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{config_8hpp_a661d236dd49f3aef3a2cf46cf6a1405e}\label{config_8hpp_a661d236dd49f3aef3a2cf46cf6a1405e}} 
+\#define \mbox{\hyperlink{config_8hpp_a661d236dd49f3aef3a2cf46cf6a1405e}{D\+H\+T\+\_\+\+P\+IN}}~17
+\begin{DoxyCompactList}\small\item\em D\+HT pin value. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{config_8hpp_ae629329cccdb02bbe61ab193453fe8ce}\label{config_8hpp_ae629329cccdb02bbe61ab193453fe8ce}} 
+\#define \mbox{\hyperlink{config_8hpp_ae629329cccdb02bbe61ab193453fe8ce}{B\+U\+I\+L\+D\+\_\+\+I\+N\+\_\+\+L\+E\+D\+\_\+\+P\+IN}}~2
+\begin{DoxyCompactList}\small\item\em Build-\/in L\+ED pin value. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{config_8hpp_a12a46d6ff86950784521c2446d84b2fc}\label{config_8hpp_a12a46d6ff86950784521c2446d84b2fc}} 
+\#define \mbox{\hyperlink{config_8hpp_a12a46d6ff86950784521c2446d84b2fc}{L\+E\+D\+\_\+\+D\+E\+L\+AY}}~300
+\begin{DoxyCompactList}\small\item\em L\+ED delay blink. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{config_8hpp_a5319773dcd45d8609d58007cb4feb863}\label{config_8hpp_a5319773dcd45d8609d58007cb4feb863}} 
+\#define \mbox{\hyperlink{config_8hpp_a5319773dcd45d8609d58007cb4feb863}{B\+A\+T\+T\+E\+R\+Y\+\_\+\+P\+IN}}~32
+\begin{DoxyCompactList}\small\item\em Battery analog pin value. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{config_8hpp_a7e2d8ef8f0724f23ce84b1e7d0c171d9}\label{config_8hpp_a7e2d8ef8f0724f23ce84b1e7d0c171d9}} 
+\#define \mbox{\hyperlink{config_8hpp_a7e2d8ef8f0724f23ce84b1e7d0c171d9}{S\+D\+\_\+\+CS}}~5
+\begin{DoxyCompactList}\small\item\em SD card CS pin. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{config_8hpp_a506bd39d58ad0f879b7c3b7d3e4296ff}\label{config_8hpp_a506bd39d58ad0f879b7c3b7d3e4296ff}} 
+\#define \mbox{\hyperlink{config_8hpp_a506bd39d58ad0f879b7c3b7d3e4296ff}{J\+S\+O\+N\+\_\+\+D\+O\+C\+\_\+\+S\+I\+Z\+E\+\_\+\+M\+E\+A\+S\+U\+R\+E\+M\+E\+N\+TS}}~12288
+\begin{DoxyCompactList}\small\item\em J\+S\+ON document buffer size in bytes for measured data. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{config_8hpp_a5ae1bed2a6b0c1f4b986652033ac75e4}\label{config_8hpp_a5ae1bed2a6b0c1f4b986652033ac75e4}} 
+\#define \mbox{\hyperlink{config_8hpp_a5ae1bed2a6b0c1f4b986652033ac75e4}{J\+S\+O\+N\+\_\+\+D\+O\+C\+\_\+\+S\+I\+Z\+E\+\_\+\+S\+T\+A\+T\+US}}~192
+\begin{DoxyCompactList}\small\item\em J\+S\+ON document buffer size in bytes for error report. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{config_8hpp_ad7d0c491daba2f01ad297f3df5a125c7}\label{config_8hpp_ad7d0c491daba2f01ad297f3df5a125c7}} 
+\#define \mbox{\hyperlink{config_8hpp_ad7d0c491daba2f01ad297f3df5a125c7}{M\+Q\+T\+T\+\_\+\+P\+A\+C\+K\+E\+T\+\_\+\+S\+I\+ZE}}~512
+\begin{DoxyCompactList}\small\item\em M\+Q\+TT packet size in bytes. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{config_8hpp_ab117546549783a058d0321a287699579}\label{config_8hpp_ab117546549783a058d0321a287699579}} 
+\#define \mbox{\hyperlink{config_8hpp_ab117546549783a058d0321a287699579}{F\+I\+L\+E\+\_\+\+N\+A\+ME}}~\char`\"{}/station/station\+\_\+data.\+json\char`\"{}
+\begin{DoxyCompactList}\small\item\em Full path file location for storing measured data. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{config_8hpp_a6b25a28190e19bc886bda4f65d04bbd4}\label{config_8hpp_a6b25a28190e19bc886bda4f65d04bbd4}} 
+\#define \mbox{\hyperlink{config_8hpp_a6b25a28190e19bc886bda4f65d04bbd4}{L\+O\+G\+\_\+\+T\+O\+P\+IC}}~\char`\"{}esp32/\mbox{\hyperlink{communication_8hpp_a2f8b7cef5b32403684936c1b5bd06c70}{log}}\char`\"{}
+\begin{DoxyCompactList}\small\item\em Topic name for logs. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{config_8hpp_aa49a98e878f1e188b3a24497a9bc7bde}\label{config_8hpp_aa49a98e878f1e188b3a24497a9bc7bde}} 
+\#define \mbox{\hyperlink{config_8hpp_aa49a98e878f1e188b3a24497a9bc7bde}{D\+A\+T\+A\+\_\+\+T\+O\+P\+IC}}~\char`\"{}esp32/data\char`\"{}
+\begin{DoxyCompactList}\small\item\em Topic name for measured data. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{config_8hpp_a35a0211889c19fd201790aee107b064d}\label{config_8hpp_a35a0211889c19fd201790aee107b064d}} 
+\#define \mbox{\hyperlink{config_8hpp_a35a0211889c19fd201790aee107b064d}{R\+E\+P\+O\+R\+T\+\_\+\+T\+O\+P\+IC}}~\char`\"{}esp32/report\char`\"{}
+\begin{DoxyCompactList}\small\item\em Topic name for error reports. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{config_8hpp_afd77dfa5a1c31a94378a4debc6c5c998}\label{config_8hpp_afd77dfa5a1c31a94378a4debc6c5c998}} 
+\#define \mbox{\hyperlink{config_8hpp_afd77dfa5a1c31a94378a4debc6c5c998}{M\+Q\+T\+T\+\_\+\+P\+U\+B\+\_\+\+Q\+OS}}~2
+\begin{DoxyCompactList}\small\item\em Quality of service (QoS) for M\+Q\+TT publish communication. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{config_8hpp_a8d62a231c5409722ce52102c0677c498}\label{config_8hpp_a8d62a231c5409722ce52102c0677c498}} 
+\#define \mbox{\hyperlink{config_8hpp_a8d62a231c5409722ce52102c0677c498}{M\+Q\+T\+T\+\_\+\+S\+U\+B\+\_\+\+Q\+OS}}~1
+\begin{DoxyCompactList}\small\item\em Quality of service (QoS) for M\+Q\+TT subscribe communication. \end{DoxyCompactList}\item 
+\#define \mbox{\hyperlink{config_8hpp_a335fe74f296f8ed3fa8a86c66a2dc237}{S\+E\+A\+\_\+\+L\+E\+V\+E\+L\+\_\+\+P\+R\+E\+S\+S\+U\+RE}}~1034
+\begin{DoxyCompactList}\small\item\em Sea level of current location of station. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{config_8hpp_a587ba0cb07f02913598610049a3bbb79}\label{config_8hpp_a587ba0cb07f02913598610049a3bbb79}} 
+static const char $\ast$ \mbox{\hyperlink{config_8hpp_a587ba0cb07f02913598610049a3bbb79}{ssid}} = \char`\"{}Damian\char`\"{}
+\begin{DoxyCompactList}\small\item\em Wi-\/\+Fi S\+S\+ID. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{config_8hpp_a5116361cd1a74268fdd8183845f36824}\label{config_8hpp_a5116361cd1a74268fdd8183845f36824}} 
+static const char $\ast$ \mbox{\hyperlink{config_8hpp_a5116361cd1a74268fdd8183845f36824}{passwd}} = \char`\"{}Ahoj123123\char`\"{}
+\begin{DoxyCompactList}\small\item\em Wi-\/\+Fi password. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{config_8hpp_a6bd950625db0f240acc63a9cb41873f6}\label{config_8hpp_a6bd950625db0f240acc63a9cb41873f6}} 
+static const char $\ast$ \mbox{\hyperlink{config_8hpp_a6bd950625db0f240acc63a9cb41873f6}{ntp\+Server}} = \char`\"{}0.cz.\+pool.\+ntp.\+org\char`\"{}
+\begin{DoxyCompactList}\small\item\em N\+TP server address. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{config_8hpp_a762744b8950fb84f78f510622b373042}\label{config_8hpp_a762744b8950fb84f78f510622b373042}} 
+static const char $\ast$ \mbox{\hyperlink{config_8hpp_a762744b8950fb84f78f510622b373042}{mqtt\+ID}} = \char`\"{}esp32\char`\"{}
+\begin{DoxyCompactList}\small\item\em M\+Q\+TT client ID. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{config_8hpp_a786fb64f845e6d2e23f442176e39e155}\label{config_8hpp_a786fb64f845e6d2e23f442176e39e155}} 
+static const char $\ast$ \mbox{\hyperlink{config_8hpp_a786fb64f845e6d2e23f442176e39e155}{mqtt\+Name}} = \char`\"{}esp32\char`\"{}
+\begin{DoxyCompactList}\small\item\em M\+Q\+TT client name. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{config_8hpp_aa760e4d2b2a7c9dd06fbba9ed1badbc7}\label{config_8hpp_aa760e4d2b2a7c9dd06fbba9ed1badbc7}} 
+static const char $\ast$ \mbox{\hyperlink{config_8hpp_aa760e4d2b2a7c9dd06fbba9ed1badbc7}{mqtt\+Passwd}} = \char`\"{}\char`\"{}
+\begin{DoxyCompactList}\small\item\em M\+Q\+TT client password. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{config_8hpp_ae62fa8557ef4586408dcbe2f1a09e839}\label{config_8hpp_ae62fa8557ef4586408dcbe2f1a09e839}} 
+static const char $\ast$ \mbox{\hyperlink{config_8hpp_ae62fa8557ef4586408dcbe2f1a09e839}{mqtt\+\_\+server}} = \char`\"{}192.\+168.\+0.\+38\char`\"{}
+\begin{DoxyCompactList}\small\item\em M\+Q\+TT server IP address. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{config_8hpp_ade0cf0e857c1925d1027875a58017e80}\label{config_8hpp_ade0cf0e857c1925d1027875a58017e80}} 
+static const uint16\+\_\+t \mbox{\hyperlink{config_8hpp_ade0cf0e857c1925d1027875a58017e80}{mqtt\+\_\+port}} = 1883
+\begin{DoxyCompactList}\small\item\em M\+Q\+TT server port. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{config_8hpp_aad01339e89106fdf68f57ef118956fa9}\label{config_8hpp_aad01339e89106fdf68f57ef118956fa9}} 
+static const char $\ast$ \mbox{\hyperlink{config_8hpp_aad01339e89106fdf68f57ef118956fa9}{hostname}} = \char`\"{}esp32\char`\"{}
+\begin{DoxyCompactList}\small\item\em Station hostname in local network. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{config_8hpp_a6521748bf6a761149d1a91e99e9d3ef0}\label{config_8hpp_a6521748bf6a761149d1a91e99e9d3ef0}} 
+static const char $\ast$ \mbox{\hyperlink{config_8hpp_a6521748bf6a761149d1a91e99e9d3ef0}{passwd\+Hash}} = \char`\"{}\char`\"{}
+\begin{DoxyCompactList}\small\item\em M\+Q\+TT password hash. \end{DoxyCompactList}\item 
+static const long \mbox{\hyperlink{config_8hpp_a6c7db28543c3b2ef692f8dcb63964f2b}{gmt\+Offset\+\_\+sec}} = 3600
+\begin{DoxyCompactList}\small\item\em G\+MT offset in seconds. \end{DoxyCompactList}\item 
+static const int \mbox{\hyperlink{config_8hpp_abcecff6206d272c30174ca268e2e6f0a}{daylight\+Offset\+\_\+sec}} = 3600
+\begin{DoxyCompactList}\small\item\em U\+TC daylight offset. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{config_8hpp_a101a4776c053a5340502728d81549c32}\label{config_8hpp_a101a4776c053a5340502728d81549c32}} 
+static const int \mbox{\hyperlink{config_8hpp_a101a4776c053a5340502728d81549c32}{high\+\_\+level}} = 70
+\begin{DoxyCompactList}\small\item\em Define high level of battery. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{config_8hpp_a78ac7a95156c1133dfd3d8c317015b76}\label{config_8hpp_a78ac7a95156c1133dfd3d8c317015b76}} 
+static const int \mbox{\hyperlink{config_8hpp_a78ac7a95156c1133dfd3d8c317015b76}{medium\+\_\+level}} = 40
+\begin{DoxyCompactList}\small\item\em Define medium level of battery. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{config_8hpp_a13daa5ed67ea7be1074293e9d98b1b42}\label{config_8hpp_a13daa5ed67ea7be1074293e9d98b1b42}} 
+static const int \mbox{\hyperlink{config_8hpp_a13daa5ed67ea7be1074293e9d98b1b42}{low\+\_\+level}} = 20
+\begin{DoxyCompactList}\small\item\em Define low level of battery. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+This file holds config values such as server ip, delay values, pin values etc. 
+
+
+
+\doxysubsection{Macro Definition Documentation}
+\mbox{\Hypertarget{config_8hpp_a335fe74f296f8ed3fa8a86c66a2dc237}\label{config_8hpp_a335fe74f296f8ed3fa8a86c66a2dc237}} 
+\index{config.hpp@{config.hpp}!SEA\_LEVEL\_PRESSURE@{SEA\_LEVEL\_PRESSURE}}
+\index{SEA\_LEVEL\_PRESSURE@{SEA\_LEVEL\_PRESSURE}!config.hpp@{config.hpp}}
+\doxysubsubsection{\texorpdfstring{SEA\_LEVEL\_PRESSURE}{SEA\_LEVEL\_PRESSURE}}
+{\footnotesize\ttfamily \#define S\+E\+A\+\_\+\+L\+E\+V\+E\+L\+\_\+\+P\+R\+E\+S\+S\+U\+RE~1034}
+
+
+
+Sea level of current location of station. 
+
+Is used to calibrate sensors. 
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{config_8hpp_abcecff6206d272c30174ca268e2e6f0a}\label{config_8hpp_abcecff6206d272c30174ca268e2e6f0a}} 
+\index{config.hpp@{config.hpp}!daylightOffset\_sec@{daylightOffset\_sec}}
+\index{daylightOffset\_sec@{daylightOffset\_sec}!config.hpp@{config.hpp}}
+\doxysubsubsection{\texorpdfstring{daylightOffset\_sec}{daylightOffset\_sec}}
+{\footnotesize\ttfamily const int daylight\+Offset\+\_\+sec = 3600\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+U\+TC daylight offset. 
+
+Is used to set time from N\+TP server. \mbox{\Hypertarget{config_8hpp_a6c7db28543c3b2ef692f8dcb63964f2b}\label{config_8hpp_a6c7db28543c3b2ef692f8dcb63964f2b}} 
+\index{config.hpp@{config.hpp}!gmtOffset\_sec@{gmtOffset\_sec}}
+\index{gmtOffset\_sec@{gmtOffset\_sec}!config.hpp@{config.hpp}}
+\doxysubsubsection{\texorpdfstring{gmtOffset\_sec}{gmtOffset\_sec}}
+{\footnotesize\ttfamily const long gmt\+Offset\+\_\+sec = 3600\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+G\+MT offset in seconds. 
+
+Is used to set time from N\+TP server. 

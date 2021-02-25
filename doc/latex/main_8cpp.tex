@@ -1,0 +1,139 @@
+\hypertarget{main_8cpp}{}\doxysection{src/main.cpp File Reference}
+\label{main_8cpp}\index{src/main.cpp@{src/main.cpp}}
+
+
+Main file.  
+
+
+{\ttfamily \#include $<$Adafruit\+\_\+\+B\+M\+E680.\+h$>$}\newline
+{\ttfamily \#include $<$Arduino\+Json.\+hpp$>$}\newline
+{\ttfamily \#include $<$Pub\+Sub\+Client.\+h$>$}\newline
+{\ttfamily \#include $<$Arduino.\+h$>$}\newline
+{\ttfamily \#include $<$Wi\+Fi.\+h$>$}\newline
+{\ttfamily \#include $<$Wire.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}communication.\+hpp\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}statstruct.\+hpp\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}rtcmodule.\+hpp\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}storage.\+hpp\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}config.\+hpp\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}debug.\+hpp\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}sps30.\+hpp\char`\"{}}\newline
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{main_8cpp_ab07f744b7654b672824686a5f688b938}\label{main_8cpp_ab07f744b7654b672824686a5f688b938}} 
+Pub\+Sub\+Client \mbox{\hyperlink{main_8cpp_ab07f744b7654b672824686a5f688b938}{mq\+Client}} (\mbox{\hyperlink{main_8cpp_a64f7c60366b0a82c42d7a1dbf4e9505a}{wifi\+Client}})
+\begin{DoxyCompactList}\small\item\em M\+Q\+TT client. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{main_8cpp_ab64b6e5f3ed83c2d1d98014e2abfebd6}\label{main_8cpp_ab64b6e5f3ed83c2d1d98014e2abfebd6}} 
+S\+D\+FS \mbox{\hyperlink{main_8cpp_ab64b6e5f3ed83c2d1d98014e2abfebd6}{card}} (SD)
+\begin{DoxyCompactList}\small\item\em SD card module. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{main_8cpp_aad42151da76d6be3b12c356b4b2e74f6}\label{main_8cpp_aad42151da76d6be3b12c356b4b2e74f6}} 
+void \mbox{\hyperlink{main_8cpp_aad42151da76d6be3b12c356b4b2e74f6}{setup\+Wifi}} ()
+\begin{DoxyCompactList}\small\item\em Is used to attempt to establish Wi-\/\+Fi connection. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{main_8cpp_ac00122867340904ed381a8980f310967}{measure}} (\mbox{\hyperlink{structmeasurements}{measurements}} \&data, R\+T\+C\+\_\+\+D\+S3231 \&\mbox{\hyperlink{rtcmodule_8hpp_afa042f998806fcdedab1794cebbeaad3}{rtc}}, Adafruit\+\_\+\+B\+M\+E680 \&\mbox{\hyperlink{main_8cpp_ad7e329a8155e48e8b0e0694bc5a77d28}{bme}})
+\begin{DoxyCompactList}\small\item\em Get reading from all available sensors and modules. \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{main_8cpp_a54a79ad5fbeab79c3935e803391f1ad3}{read\+Battery\+Level}} ()
+\begin{DoxyCompactList}\small\item\em Read battery level. \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{main_8cpp_a70ed9d420490ba365f282b9c315e7e2a}{set\+Sleep\+Timer}} (float battery\+Level)
+\begin{DoxyCompactList}\small\item\em Determine and set the time to put station to sleep. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{main_8cpp_a4fc01d736fe50cf5b977f755b675f11d}{setup}} ()
+\begin{DoxyCompactList}\small\item\em Setup function Is used to setup and inicialize sensors and modules and M\+CU. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{main_8cpp_afe461d27b9c48d5921c00d521181f12f}\label{main_8cpp_afe461d27b9c48d5921c00d521181f12f}} 
+void \mbox{\hyperlink{main_8cpp_afe461d27b9c48d5921c00d521181f12f}{loop}} ()
+\begin{DoxyCompactList}\small\item\em Main loop function. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{main_8cpp_a64f7c60366b0a82c42d7a1dbf4e9505a}\label{main_8cpp_a64f7c60366b0a82c42d7a1dbf4e9505a}} 
+Wi\+Fi\+Client \mbox{\hyperlink{main_8cpp_a64f7c60366b0a82c42d7a1dbf4e9505a}{wifi\+Client}}
+\begin{DoxyCompactList}\small\item\em Wi-\/\+Fi client. \end{DoxyCompactList}\item 
+R\+T\+C\+\_\+\+D\+S3231 \mbox{\hyperlink{main_8cpp_afa042f998806fcdedab1794cebbeaad3}{rtc}}
+\begin{DoxyCompactList}\small\item\em R\+TC module. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{main_8cpp_ad7e329a8155e48e8b0e0694bc5a77d28}\label{main_8cpp_ad7e329a8155e48e8b0e0694bc5a77d28}} 
+Adafruit\+\_\+\+B\+M\+E680 \mbox{\hyperlink{main_8cpp_ad7e329a8155e48e8b0e0694bc5a77d28}{bme}}
+\begin{DoxyCompactList}\small\item\em B\+M\+E680 sensor. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{main_8cpp_a7ec54383c54558eb25447acb655e5665}\label{main_8cpp_a7ec54383c54558eb25447acb655e5665}} 
+\mbox{\hyperlink{structstatusStruct}{status\+Struct}} \mbox{\hyperlink{main_8cpp_a7ec54383c54558eb25447acb655e5665}{status}}
+\begin{DoxyCompactList}\small\item\em Struct that contains availability status for each sensor or module. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Main file. 
+
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{main_8cpp_ac00122867340904ed381a8980f310967}\label{main_8cpp_ac00122867340904ed381a8980f310967}} 
+\index{main.cpp@{main.cpp}!measure@{measure}}
+\index{measure@{measure}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{measure()}{measure()}}
+{\footnotesize\ttfamily void measure (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structmeasurements}{measurements}} \&}]{data,  }\item[{R\+T\+C\+\_\+\+D\+S3231 \&}]{rtc,  }\item[{Adafruit\+\_\+\+B\+M\+E680 \&}]{bme }\end{DoxyParamCaption})}
+
+
+
+Get reading from all available sensors and modules. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em data} & Data Struct in which measured data is stored \\
+\hline
+{\em rtc} & rtc module \\
+\hline
+{\em bme} & B\+M\+E680 sensor \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{main_8cpp_a54a79ad5fbeab79c3935e803391f1ad3}\label{main_8cpp_a54a79ad5fbeab79c3935e803391f1ad3}} 
+\index{main.cpp@{main.cpp}!readBatteryLevel@{readBatteryLevel}}
+\index{readBatteryLevel@{readBatteryLevel}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{readBatteryLevel()}{readBatteryLevel()}}
+{\footnotesize\ttfamily double read\+Battery\+Level (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Read battery level. 
+
+\begin{DoxyReturn}{Returns}
+battery level in \% 
+\end{DoxyReturn}
+\mbox{\Hypertarget{main_8cpp_a70ed9d420490ba365f282b9c315e7e2a}\label{main_8cpp_a70ed9d420490ba365f282b9c315e7e2a}} 
+\index{main.cpp@{main.cpp}!setSleepTimer@{setSleepTimer}}
+\index{setSleepTimer@{setSleepTimer}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{setSleepTimer()}{setSleepTimer()}}
+{\footnotesize\ttfamily int set\+Sleep\+Timer (\begin{DoxyParamCaption}\item[{float}]{battery\+Level }\end{DoxyParamCaption})}
+
+
+
+Determine and set the time to put station to sleep. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em battery\+Level} & battery level in \% \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Sleep mode 
+\end{DoxyReturn}
+\mbox{\Hypertarget{main_8cpp_a4fc01d736fe50cf5b977f755b675f11d}\label{main_8cpp_a4fc01d736fe50cf5b977f755b675f11d}} 
+\index{main.cpp@{main.cpp}!setup@{setup}}
+\index{setup@{setup}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{setup()}{setup()}}
+{\footnotesize\ttfamily void setup (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Setup function Is used to setup and inicialize sensors and modules and M\+CU. 
+
+Establish Wi-\/\+Fi connection and connection to M\+Q\+TT broker 
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{main_8cpp_afa042f998806fcdedab1794cebbeaad3}\label{main_8cpp_afa042f998806fcdedab1794cebbeaad3}} 
+\index{main.cpp@{main.cpp}!rtc@{rtc}}
+\index{rtc@{rtc}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{rtc}{rtc}}
+{\footnotesize\ttfamily R\+T\+C\+\_\+\+D\+S3231 rtc}
+
+
+
+R\+TC module. 
+
+Extern R\+TC module. 
