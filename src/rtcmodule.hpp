@@ -9,7 +9,7 @@
  * Function for working with RTC module
  */
 
-/**
+/** \var
  * Extern RTC module
  */
 extern RTC_DS3231 rtc;

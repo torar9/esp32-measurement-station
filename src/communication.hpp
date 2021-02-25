@@ -8,7 +8,7 @@
 #include "statstruct.hpp"
 #include "config.hpp"
 
-/**
+/** \var
  * Extern MQTT client
  */
 extern PubSubClient mqClient;

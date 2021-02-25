@@ -6,6 +6,10 @@
 /** @endcond */
 
 /** \file datastruct.hpp
+ * Holds structure measurements
+ */
+
+/** \struct
  * This struct is used to hold measured data.
  */
 struct measurements

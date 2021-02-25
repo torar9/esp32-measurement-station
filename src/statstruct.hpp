@@ -2,6 +2,10 @@
 #define STATSTRUCT_HPP
 
 /** \file statstruct.hpp
+ * Holds structure statusStruct
+ */
+
+/** \struct
  * This structure is used to hold information about availability of sensor or module.
  */
 struct statusStruct

@@ -11,8 +11,8 @@
  * Function for working with storage and JSON documents
  */
 
-/**
- * Extern SD card
+/** \var
+ * Extern SDFS card
  */
 extern SDFS card;
 
