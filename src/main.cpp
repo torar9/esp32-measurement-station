@@ -4,7 +4,6 @@
 #include <PubSubClient.h>
 #include <Arduino.h>
 #include <WiFi.h>
-#include <Wire.h>
 /** @endcond */
 #include "communication.hpp"
 #include "statstruct.hpp"
