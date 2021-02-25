@@ -134,7 +134,7 @@ void setup()
   {
     struct tm timeStr;
 
-    configTime(gmtOffset_sec, daylightOffset_sec, NTP_SERVER);
+    configTime(GMT_OFFSET_SEC, DAYLIGHT_OFFSET_SEC, NTP_SERVER);
     getLocalTime(&timeStr);
 
     RTCSetTimeOnline(timeStr);

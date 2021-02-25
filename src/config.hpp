@@ -117,12 +117,13 @@
  * GMT offset in seconds.
  * Is used to set time from NTP server.
  */
-#define gmtOffset_sec 3600
+#define GMT_OFFSET_SEC 3600
 /**
  * UTC daylight offset.
  * Is used to set time from NTP server.
  */
-#define daylightOffset_sec 3600
+#define DAYLIGHT_OFFSET_SEC 3600
+
 
 
 
