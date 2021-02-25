@@ -1,5 +1,4 @@
 #include "sps30.hpp"
-#include "debug.hpp"
 #include "communication.hpp"
 
 #define BUFFER_SIZE_MEASURE 80

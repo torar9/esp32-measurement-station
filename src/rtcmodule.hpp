@@ -1,9 +1,9 @@
 #ifndef RTCMODULE_HPP
 #define RTCMODULE_HPP
 
-#include <Arduino.h>
-#include <time.h>
+/** @cond */
 #include <RTClib.h>
+/** @endcond */
 
 /** \file rtcmodule.hpp
  * Function for working with RTC module

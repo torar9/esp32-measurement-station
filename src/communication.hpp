@@ -1,12 +1,11 @@
 #ifndef COMMUNICATION_HPP
 #define COMMUNICATION_HPP
 
+/** @cond */
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
-#include <string>
-#include "storage.hpp"
+/** @endcond */
 #include "statstruct.hpp"
-#include "debug.hpp"
 #include "config.hpp"
 
 /**

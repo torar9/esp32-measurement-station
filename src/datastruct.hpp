@@ -1,7 +1,9 @@
 #ifndef DATASTRUCT_HPP
 #define DATASTRUCT_HPP
 
+/** @cond */
 #include <sps30.hpp>
+/** @endcond */
 
 /** \file datastruct.hpp
  * This struct is used to hold measured data.

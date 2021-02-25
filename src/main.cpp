@@ -1,15 +1,17 @@
+/** @cond */
 #include <Adafruit_BME680.h>
 #include <ArduinoJson.hpp>
 #include <PubSubClient.h>
 #include <Arduino.h>
 #include <WiFi.h>
 #include <Wire.h>
+/** @endcond */
 #include "communication.hpp"
 #include "statstruct.hpp"
+#include "jsonhelper.hpp"
 #include "rtcmodule.hpp"
 #include "storage.hpp"
 #include "config.hpp"
-#include "debug.hpp"
 #include "sps30.hpp"
 
 /** \file main.cpp

@@ -1,8 +1,9 @@
 #ifndef SPS30_HPP
 #define SPS30_HPP
 
-#include <Arduino.h>
+/** @cond */
 #include <sps30.h>
+/** @endcond */
 
 /** \file sps30.hpp
  * Function for working with sps30 sensor.

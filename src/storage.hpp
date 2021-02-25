@@ -1,11 +1,9 @@
 #ifndef STORAGE_HPP
 #define STORAGE_HPP
 
-#include <Arduino.h>
-#include <ArduinoJson.h>
-#include <SPI.h>
+/** @cond */
 #include <SD.h>
-#include <FS.h>
+/** @endcond */
 #include "statstruct.hpp"
 #include "datastruct.hpp"
 
@@ -39,19 +37,6 @@ bool cardWriteJSONToFile(DynamicJsonDocument &doc, char* fileName);
  * @return Whatever or not operation was successful
  */
 bool cardLoadJSONFromFile(DynamicJsonDocument &doc, char* fileName);
-
-/**
- * Append measurements to JSON document
- * @param doc JSON document with data
- * @param event struct with measurement data
- */
-void addEventToJSON(DynamicJsonDocument &doc, measurements &event);
-/**
- * Append status to JSON document
- * @param doc JSON document with data
- * @param status struct with status data
- */
-void addEventToJSON(DynamicJsonDocument &doc, statusStruct &status);
 
 /**
  * Delete file on SD card

@@ -1,5 +1,4 @@
 #include "rtcmodule.hpp"
-#include "debug.hpp"
 
 #define BUFFER_SIZE 40
 

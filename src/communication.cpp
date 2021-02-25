@@ -1,4 +1,5 @@
 #include "communication.hpp"
+#include "jsonhelper.hpp"
 
 void callback(char* topic, byte* message, unsigned int length)
 {
