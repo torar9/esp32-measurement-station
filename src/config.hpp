@@ -151,6 +151,7 @@ static const int high_level = 70; /**< Define high level of battery. */
 static const int medium_level = 40; /**< Define medium level of battery. */
 static const int low_level = 20; /**< Define low level of battery */
 
+/** @cond */
 #if DEBUG
   #define DBG_SERIAL_BEGIN(x) Serial.begin(x);
   #define DBG_SERIAL_SETUP(x) Serial.begin(x);
@@ -168,5 +169,6 @@ static const int low_level = 20; /**< Define low level of battery */
   #define DBG_PRINTLN(x)
   #define DBG_FLUSH()
 #endif
+/** @endcond */
 
 #endif
