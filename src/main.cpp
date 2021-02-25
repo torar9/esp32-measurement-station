@@ -201,7 +201,6 @@ void loop()
   sps30_stop_measurement();
   log("End of main loop...");
   DBG_FLUSH();
-  //ArduinoOTA.handle();
   delay(5000);
   WiFi.disconnect();
   esp_deep_sleep_start();
