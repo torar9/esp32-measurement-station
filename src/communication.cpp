@@ -49,7 +49,7 @@ void log(const char* message, bool newLine, const char* topic)
   #if DEBUG
     if(mqttClient.connected())
     {
-      if(!mqttClient.publish(topic, message, (unsigned)strlen(message), 0))
+      if(!mqttClient.publish(topic, message, (unsigned)strlen(message), MQTT_PUB_QOS))
         DBG_PRINTLN("Failed to send log message...");
     }
 

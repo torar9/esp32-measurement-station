@@ -93,6 +93,9 @@
  *     Module/sensor, and MCU configuration
  ***********************************************/
 
+/**< Specifies how many measurments to take before uploading data. */
+#define MEASUREMENTS_COUNTER 2
+
 /**< Baud rate for serial communication. */
 #define BAUD_RATE 115200 
 
@@ -100,10 +103,10 @@
 #define BATTERY_PIN 32
 
 /**< SD card CS pin. */
-#define SD_CS 5 
+#define SD_CS 5
 
 /**< JSON document buffer size in bytes for measured data. */
-#define JSON_DOC_SIZE_MEASUREMENTS 512
+#define JSON_DOC_SIZE_MEASUREMENTS 1024
 
 /**< JSON document buffer size in bytes for error report. */
 #define JSON_DOC_SIZE_STATUS 192

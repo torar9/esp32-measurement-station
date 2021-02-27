@@ -5,6 +5,10 @@
 #include <Arduino.h>
 #include <MQTT.h>
 #include <WiFi.h>
+#include <esp_pm.h>
+#include "driver/adc.h"
+#include <esp_wifi.h>
+#include <esp_bt.h>
 /** @endcond */
 #include "communication.hpp"
 #include "statstruct.hpp"
@@ -17,6 +21,12 @@
 /** \file main.cpp
  * Main file
  */
+
+/**
+ * Offline counter stored in internal RTC memory of ESP32, counts how many times station measured. 
+ * Maximum amout of measurements is specified by MEASUREMENTS_COUNTER macro.
+ */
+RTC_DATA_ATTR unsigned int offlineCounter = 0;
 
 WiFiClient wifiClient; /**< Wi-Fi client */
 RTC_DS3231 rtc; /**< RTC module */
@@ -52,11 +62,16 @@ double readBatteryLevel();
 int setSleepTimer(float batteryLevel);
 
 /**
- * @brief Save JSON document on SD card
- * 
+ * Save JSON document on SD card
  * @param doc 
  */
 void backup(DynamicJsonDocument &doc);
+
+/**
+ * Prepare MCU for sleep, set deep sleep interval according to battery level.
+ * @param batteryLevel Battery level in %.
+ */
+void sleep(float batteryLevel);
 
 /**
  * Setup function
@@ -70,7 +85,7 @@ void setup()
   DBG_SERIAL_BEGIN(BAUD_RATE);
 
   btStop();
-  setupWifi();
+
   if(WiFi.status() == WL_CONNECTED)
   {
     mqttClient.begin(MQTT_SERVER, MQTT_PORT, wifiClient);
@@ -79,6 +94,7 @@ void setup()
     mqttClient.connect(MQTT_ID);
   }
 
+  adc_power_acquire();
   pinMode(BATTERY_PIN, INPUT);
   adcAttachPin(BATTERY_PIN);
 
@@ -156,7 +172,6 @@ void setup()
  */
 void loop() 
 {
-  mqttClient.loop();
   bool success = false;
   DynamicJsonDocument eventDoc(512);
   measurements data;
@@ -165,6 +180,12 @@ void loop()
   log("Starting to measure...");
   measure(data, rtc, bme);
   addEventToJSON(eventDoc, data);
+
+  if((offlineCounter + 1) < MEASUREMENTS_COUNTER && status.cardAvailable)
+    goto backup;
+
+  setupWifi();
+  mqttClient.loop();
 
   if(WiFi.status() == WL_CONNECTED)
   {
@@ -216,27 +237,31 @@ void loop()
     }
   }
 
+  backup:
   if(!success && status.cardAvailable)
   {
-    log("Failed to upload... backing up");
+    log("Backing up data to SD card");
     backup(eventDoc);
   }
 
+  if(success)
+    offlineCounter = 0;
+  else
+  offlineCounter++;
+
   eventDoc.clear();
 
-  setSleepTimer(data.batteryLevel);
   //sps30_stop_measurement();
   log("End of main loop...");
   DBG_FLUSH();
   delay(5000);
-  mqttClient.disconnect();
-  WiFi.disconnect();
-  esp_deep_sleep_start();
+  sleep(data.batteryLevel);
 }
 
 void setupWifi()
 {
   DBG_PRINTLN(F("Connecting to WiFi..."));
+  esp_wifi_start();
   WiFi.mode(WIFI_MODE_STA);
   WiFi.setHostname(HOSTNAME);
   WiFi.setAutoReconnect(true);
@@ -252,6 +277,11 @@ void setupWifi()
     DBG_PRINTLN(F("Connected to WiFi."));
     DBG_PRINT(F("IPv4 address: "));
     DBG_PRINTLN(WiFi.localIP());
+
+    mqttClient.begin(MQTT_SERVER, MQTT_PORT, wifiClient);
+    mqttClient.setTimeout(MQTT_TIMEOUT);
+    mqttClient.onMessage(callback);
+    mqttClient.connect(MQTT_ID);
   }
 }
 
@@ -322,4 +352,18 @@ void backup(DynamicJsonDocument &doc)
   fname += ".json";
 
   cardWriteJSONToFile(doc, fname.c_str());
+}
+
+void sleep(float batteryLevel)
+{
+  setSleepTimer(batteryLevel);
+  mqttClient.disconnect();
+  WiFi.disconnect();
+  WiFi.mode(WIFI_OFF);
+
+  adc_power_release();
+  esp_wifi_stop();
+  esp_bt_controller_disable();
+
+  esp_deep_sleep_start();
 }
