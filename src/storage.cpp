@@ -11,7 +11,7 @@ bool cardPrepare()
     return true;
 }
 
-bool cardWriteJSONToFile(DynamicJsonDocument &doc, char* fileName)
+bool cardWriteJSONToFile(DynamicJsonDocument &doc, const char* fileName)
 {
     File file = card.open(fileName, FILE_WRITE);
     if(!file)
@@ -50,7 +50,7 @@ bool cardLoadJSONFromFile(DynamicJsonDocument &doc, char* fileName)
     return true;
 }
 
-bool cardClearFile(char* fileName)
+bool cardClearFile(const char* fileName)
 {
     if(card.exists(fileName))
         return card.remove(fileName);

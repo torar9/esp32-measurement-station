@@ -2,16 +2,17 @@
 #define COMMUNICATION_HPP
 
 /** @cond */
-#include <PubSubClient.h>
 #include <ArduinoJson.h>
+#include <MQTT.h>
 /** @endcond */
 #include "statstruct.hpp"
 #include "config.hpp"
 
+
 /** \var
  * Extern MQTT client
  */
-extern PubSubClient mqClient;
+extern MQTTClient mqttClient;
 
 /** \file communication.hpp
  * This file contains function for communication with server.
@@ -24,6 +25,7 @@ extern PubSubClient mqClient;
  * @param length size of message
  */
 void callback(char* topic, byte* message, unsigned int length);
+void callback(String &topic, String &payload);
 
 /**
  * Function for uploading measurment data to MQTT topic on server.

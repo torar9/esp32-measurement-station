@@ -1,9 +1,10 @@
 /** @cond */
 #include <Adafruit_BME680.h>
 #include <ArduinoJson.hpp>
-#include <PubSubClient.h>
+#include <MQTT.h>
 #include <Arduino.h>
 #include <WiFi.h>
+#include <WiFiClient.h>
 /** @endcond */
 #include "communication.hpp"
 #include "statstruct.hpp"
@@ -18,11 +19,11 @@
  */
 
 WiFiClient wifiClient; /**< Wi-Fi client */
-PubSubClient mqClient(wifiClient); /**< MQTT client */
 RTC_DS3231 rtc; /**< RTC module */
 Adafruit_BME680 bme; /**< BME680 sensor */
 SDFS card(SD); /**< SD card module */
 statusStruct status; /**< Struct that contains availability status for each sensor or module */
+MQTTClient mqttClient(MQTT_PACKET_SIZE); /**< MQTT client */
 
 /**
  * Is used to attempt to establish Wi-Fi connection
@@ -50,6 +51,15 @@ double readBatteryLevel();
  */
 int setSleepTimer(float batteryLevel);
 
+void backup(DynamicJsonDocument &doc)
+{
+  String fname("/station/");
+  fname += RTCGetTimestamp();
+  fname += esp_random();
+  fname += ".json";
+
+  cardWriteJSONToFile(doc, fname.c_str());
+}
 
 /**
  * Setup function
@@ -66,10 +76,11 @@ void setup()
   setupWifi();
   if(WiFi.status() == WL_CONNECTED)
   {
-    mqClient.setServer(MQTT_SERVER, MQTT_PORT);
-    mqClient.setCallback(callback);
-    mqClient.setBufferSize(MQTT_PACKET_SIZE);
-    mqClient.connect(MQTT_ID);
+    mqttClient.begin(MQTT_SERVER, MQTT_PORT, wifiClient);
+    mqttClient.setTimeout(MQTT_TIMEOUT);
+    mqttClient.onMessage(callback);
+    mqttClient.connect(MQTT_ID);
+    mqttClient.loop();
   }
 
   pinMode(BATTERY_PIN, INPUT);
@@ -151,36 +162,58 @@ void setup()
 void loop() 
 {
   bool success = false;
-  DynamicJsonDocument doc(JSON_DOC_SIZE_MEASUREMENTS);
+  DynamicJsonDocument eventDoc(512);
   measurements data;
 
   log("Main loop...");
   log("Starting to measure...");
   measure(data, rtc, bme);
-
-  if(status.cardAvailable && card.exists((char*)FILE_NAME))
-  {
-    log("Trying to load data from file...");
-    cardLoadJSONFromFile(doc, (char*)FILE_NAME);
-  }
-  serializeJsonPretty(doc, Serial);
-  addEventToJSON(doc, data);
-  serializeJsonPretty(doc, Serial);
+  addEventToJSON(eventDoc, data);
 
   if(WiFi.status() == WL_CONNECTED)
   {
-    if(!mqClient.connected())
+    if(!mqttClient.connected())
     {
       log("Recconecting MQTT client");
       
-      if(mqClient.connect(MQTT_ID))
+      if(mqttClient.connect(MQTT_ID))
         goto upload;
     }
     else
     {
       upload:
         log("Uploading data...");
-        success = uploadData(doc, (char*)DATA_TOPIC);
+
+        success = uploadData(eventDoc, (char*)DATA_TOPIC);
+
+        if(status.cardAvailable && SD.exists(STORAGE_LOCATION))
+        {
+          File root = SD.open(STORAGE_LOCATION, FILE_READ);
+
+          while(true)
+          {
+            DynamicJsonDocument doc(JSON_DOC_SIZE_MEASUREMENTS);
+            File entry = root.openNextFile(FILE_READ);
+
+            if(!entry)
+            {
+              doc.clear();
+              break;
+            }
+
+            if(!entry.isDirectory())
+            {
+              deserializeJson(doc, entry);
+              if(uploadData(doc, (char*)DATA_TOPIC))
+              {
+                cardClearFile(entry.name());
+              }
+            }
+            entry.close();
+            doc.clear();
+          }
+          root.close();
+        }
 
         if(status.problemOccured)
           reportProblem(status, (char*)REPORT_TOPIC);
@@ -189,20 +222,18 @@ void loop()
 
   if(!success && status.cardAvailable)
   {
-    log("Failed to upload... saving data to SD card");
-    cardWriteJSONToFile(doc, (char*)FILE_NAME);
+    log("Failed to upload... backing up");
+    backup(eventDoc);
   }
 
-  if(success && status.cardAvailable)
-    cardClearFile((char*)FILE_NAME);
-  
-  doc.clear();
+  eventDoc.clear();
 
   setSleepTimer(data.batteryLevel);
-  sps30_stop_measurement();
+  //sps30_stop_measurement();
   log("End of main loop...");
   DBG_FLUSH();
   delay(5000);
+  mqttClient.disconnect();
   WiFi.disconnect();
   esp_deep_sleep_start();
 }

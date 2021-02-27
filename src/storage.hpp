@@ -28,7 +28,7 @@ bool cardPrepare();
  * @param fileName Full path to file
  * @return Whatever or not operation was successful
  */
-bool cardWriteJSONToFile(DynamicJsonDocument &doc, char* fileName);
+bool cardWriteJSONToFile(DynamicJsonDocument &doc, const char* fileName);
 
 /**
  * Load measured data from file on SD card
@@ -43,6 +43,6 @@ bool cardLoadJSONFromFile(DynamicJsonDocument &doc, char* fileName);
  * @param fileName Full path to file
  * @return Whatever or not operation was successful
  */
-bool cardClearFile(char* fileName);
+bool cardClearFile(const char* fileName);
 
 #endif

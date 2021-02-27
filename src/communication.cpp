@@ -1,3 +1,5 @@
+#include <stdio.h>
+#include <string.h>
 #include "communication.hpp"
 #include "jsonhelper.hpp"
 
@@ -6,20 +8,20 @@ void callback(char* topic, byte* message, unsigned int length)
   log("Callback function activated");
 }
 
+void callback(String &topic, String &payload)
+{
+  log("Callback function activated");
+}
+
 bool uploadData(DynamicJsonDocument &doc, char* topic)
 {
   if(!doc.isNull())
   {
-    JsonArray arr = doc["logs"];
-    for(auto e : arr)
-    {
-      String output;
-      serializeJson(e, output);
-      if(!mqClient.publish(topic, output.c_str(), MQTT_PUB_QOS))
-        return false;
-    }
+    String output;
+    char buffer[MQTT_PACKET_SIZE];
+    size_t n = serializeJson(doc, buffer);
 
-    return true;
+    return mqttClient.publish(topic, buffer, n, MQTT_PUB_QOS);
   }
 
   return false;
@@ -34,9 +36,10 @@ bool reportProblem(statusStruct& status, char* topic)
   if(!doc.isNull())
   {
     String output;
-    serializeJson(doc, output);
+    char buffer[MQTT_PACKET_SIZE];
+    size_t n = serializeJson(doc, buffer, n);
 
-    bool result = mqClient.publish(topic, output.c_str(), MQTT_PUB_QOS);
+    bool result = mqttClient.publish(topic, buffer, n , MQTT_PUB_QOS);
 
     doc.clear();
     return result;
@@ -49,9 +52,9 @@ bool reportProblem(statusStruct& status, char* topic)
 void log(const char* message, bool newLine, const char* topic)
 {
   #if DEBUG
-    if(mqClient.connected())
+    if(mqttClient.connected())
     {
-      if(!mqClient.publish(topic, message, MQTT_PUB_QOS))
+      if(!mqttClient.publish(topic, message, (unsigned)strlen(message), 0))
         DBG_PRINTLN("Failed to send log message...");
     }
 

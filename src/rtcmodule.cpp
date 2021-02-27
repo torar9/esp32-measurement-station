@@ -23,3 +23,14 @@ char* RTCGetString()
 
     return buffer;
 }
+
+char* RTCGetTimestamp()
+{
+    static char buffer[BUFFER_SIZE];
+    DateTime now = rtc.now();
+
+    snprintf(buffer, BUFFER_SIZE, "%04d%02d%02d%02d%02d%02d", 
+    now.year(), now.month(), now.day(), now.hour(), now.minute(), now.second());
+
+    return buffer;
+}

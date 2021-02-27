@@ -26,4 +26,6 @@ void RTCSetTimeOnline(tm &timeStr);
  */
 char* RTCGetString();
 
+char* RTCGetTimestamp();
+
 #endif

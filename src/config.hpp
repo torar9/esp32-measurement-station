@@ -49,10 +49,13 @@
 #define REPORT_TOPIC "esp32/report"
 
 /**< Quality of service (QoS) for MQTT publish communication. */
-#define MQTT_PUB_QOS 2
+#define MQTT_PUB_QOS 1
 
 /**< Quality of service (QoS) for MQTT subscribe communication. */
 #define MQTT_SUB_QOS 1
+
+/**< Connection timeout */
+#define MQTT_TIMEOUT 5000
 
 
 
@@ -100,24 +103,26 @@
 #define SD_CS 5 
 
 /**< JSON document buffer size in bytes for measured data. */
-#define JSON_DOC_SIZE_MEASUREMENTS 12288
+#define JSON_DOC_SIZE_MEASUREMENTS 512
 
 /**< JSON document buffer size in bytes for error report. */
 #define JSON_DOC_SIZE_STATUS 192
 
-/**< Full path file location for storing measured data. */
-#define FILE_NAME "/station/station_data.json"
+/**< Full path of storage location */
+#define STORAGE_LOCATION "/station"
 
 /**
  * Sea level of current location of station.
  * Is used to calibrate sensors.
  */
 #define SEA_LEVEL_PRESSURE 1034
+
 /**
  * GMT offset in seconds.
  * Is used to set time from NTP server.
  */
 #define GMT_OFFSET_SEC 3600
+
 /**
  * UTC daylight offset.
  * Is used to set time from NTP server.
