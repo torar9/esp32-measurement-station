@@ -21,10 +21,8 @@ extern MQTTClient mqttClient;
 /**
  * Callback function for MQTT client
  * @param toopic MQTT topic name
- * @param message content of message
- * @param length size of message
+ * @param payload content
  */
-void callback(char* topic, byte* message, unsigned int length);
 void callback(String &topic, String &payload);
 
 /**

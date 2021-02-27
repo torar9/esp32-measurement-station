@@ -3,11 +3,6 @@
 #include "communication.hpp"
 #include "jsonhelper.hpp"
 
-void callback(char* topic, byte* message, unsigned int length)
-{
-  log("Callback function activated");
-}
-
 void callback(String &topic, String &payload)
 {
   log("Callback function activated");

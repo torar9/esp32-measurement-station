@@ -51,15 +51,12 @@ double readBatteryLevel();
  */
 int setSleepTimer(float batteryLevel);
 
-void backup(DynamicJsonDocument &doc)
-{
-  String fname("/station/");
-  fname += RTCGetTimestamp();
-  fname += esp_random();
-  fname += ".json";
-
-  cardWriteJSONToFile(doc, fname.c_str());
-}
+/**
+ * @brief Save JSON document on SD card
+ * 
+ * @param doc 
+ */
+void backup(DynamicJsonDocument &doc);
 
 /**
  * Setup function
@@ -152,8 +149,6 @@ void setup()
   }
 
   esp_sleep_enable_timer_wakeup(uS_TO_S_FACTOR * TIME_TO_SLEEP_DEFAULT);
-
-  //mqClient.subscribe((char*)"esp32/debug");
 }
 
 /**
@@ -316,4 +311,14 @@ int setSleepTimer(float batteryLevel)
 
     return 3;
   }
+}
+
+void backup(DynamicJsonDocument &doc)
+{
+  String fname("/station/");
+  fname += RTCGetTimestamp();
+  fname += esp_random();
+  fname += ".json";
+
+  cardWriteJSONToFile(doc, fname.c_str());
 }
