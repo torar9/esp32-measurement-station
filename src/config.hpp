@@ -129,6 +129,11 @@
  */
 #define DAYLIGHT_OFFSET_SEC 3600
 
+/**
+ * @brief CPU speed in MHz
+ * Recommended speed is 240, minimum is 80.
+ */
+#define CPU_SPEED 80
 
 
 

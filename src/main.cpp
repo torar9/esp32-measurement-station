@@ -1,10 +1,10 @@
 /** @cond */
 #include <Adafruit_BME680.h>
 #include <ArduinoJson.hpp>
-#include <MQTT.h>
-#include <Arduino.h>
-#include <WiFi.h>
 #include <WiFiClient.h>
+#include <Arduino.h>
+#include <MQTT.h>
+#include <WiFi.h>
 /** @endcond */
 #include "communication.hpp"
 #include "statstruct.hpp"
@@ -65,7 +65,7 @@ void backup(DynamicJsonDocument &doc);
  */
 void setup()
 {
-  setCpuFrequencyMhz(80);
+  setCpuFrequencyMhz(CPU_SPEED);
   delay(2000);
   DBG_SERIAL_BEGIN(BAUD_RATE);
 
@@ -77,10 +77,10 @@ void setup()
     mqttClient.setTimeout(MQTT_TIMEOUT);
     mqttClient.onMessage(callback);
     mqttClient.connect(MQTT_ID);
-    mqttClient.loop();
   }
 
   pinMode(BATTERY_PIN, INPUT);
+  adcAttachPin(BATTERY_PIN);
 
   if(!card.begin(SD_CS))
   {
@@ -156,6 +156,7 @@ void setup()
  */
 void loop() 
 {
+  mqttClient.loop();
   bool success = false;
   DynamicJsonDocument eventDoc(512);
   measurements data;
