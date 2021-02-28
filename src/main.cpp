@@ -2,13 +2,13 @@
 #include <Adafruit_BME680.h>
 #include <ArduinoJson.hpp>
 #include <WiFiClient.h>
+#include <driver/adc.h>
+#include <esp_wifi.h>
 #include <Arduino.h>
+#include <esp_pm.h>
+#include <esp_bt.h>
 #include <MQTT.h>
 #include <WiFi.h>
-#include <esp_pm.h>
-#include "driver/adc.h"
-#include <esp_wifi.h>
-#include <esp_bt.h>
 /** @endcond */
 #include "communication.hpp"
 #include "statstruct.hpp"
