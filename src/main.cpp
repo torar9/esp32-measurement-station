@@ -233,7 +233,14 @@ void loop()
         }
 
         if(status.problemOccured)
-          reportProblem(status, (char*)REPORT_TOPIC);
+        {
+          DynamicJsonDocument doc(JSON_DOC_SIZE_STATUS);
+
+          addEventToJSON(doc, status);
+          uploadData(doc, (char*)REPORT_TOPIC);
+
+          doc.clear();
+        }
     }
   }
 

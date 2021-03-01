@@ -22,28 +22,6 @@ bool uploadData(DynamicJsonDocument &doc, char* topic)
   return false;
 }
 
-bool reportProblem(statusStruct& status, char* topic)
-{
-  DynamicJsonDocument doc(JSON_DOC_SIZE_STATUS);
-
-  addEventToJSON(doc, status);
-
-  if(!doc.isNull())
-  {
-    String output;
-    char buffer[MQTT_PACKET_SIZE];
-    size_t n = serializeJson(doc, buffer, n);
-
-    bool result = mqttClient.publish(topic, buffer, n , MQTT_PUB_QOS);
-
-    doc.clear();
-    return result;
-  }
-
-  doc.clear();
-  return false;
-}
-
 void log(const char* message, bool newLine, const char* topic)
 {
   #if DEBUG

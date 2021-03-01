@@ -34,14 +34,6 @@ void callback(String &topic, String &payload);
 bool uploadData(DynamicJsonDocument &doc, char* topic);
 
 /**
- * Function for uploading error data to MQTT topic on server.
- * @param status Struct with status of each senzor and module.
- * @param char MQTT topic name.
- * @return Wherever or not upload was successful.
- */
-bool reportProblem(statusStruct& status, char* topic);
-
-/**
  * Is used to print log output to serial communication.
  * If connection to server is available log is also sent to MQTT topic.
  * @param message Content of log
