@@ -24,7 +24,7 @@ bool cardPrepare();
 
 /**
  * Store measured data into file on SD card
- * @param doc JSON document with measured data
+ * @param doc JSON document with data
  * @param fileName Full path to file
  * @return Whatever or not operation was successful
  */
@@ -32,7 +32,7 @@ bool cardWriteJSONToFile(DynamicJsonDocument &doc, const char* fileName);
 
 /**
  * Load measured data from file on SD card
- * @param doc JSON document into which measured data is stored
+ * @param doc JSON document into which data is stored
  * @param fileName Full path to file
  * @return Whatever or not operation was successful
  */
