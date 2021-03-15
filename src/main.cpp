@@ -1,10 +1,12 @@
 /** @cond */
+#include <soc/rtc_cntl_reg.h>
 #include <Adafruit_BME680.h>
 #include <ArduinoJson.hpp>
 #include <WiFiClient.h>
 #include <driver/adc.h>
 #include <esp_wifi.h>
 #include <Arduino.h>
+#include <soc/soc.h>
 #include <esp_pm.h>
 #include <esp_bt.h>
 #include <MQTT.h>
@@ -80,18 +82,33 @@ void sleep(float batteryLevel);
  */
 void setup()
 {
+  WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0);
   setCpuFrequencyMhz(CPU_SPEED);
   delay(2000);
   DBG_SERIAL_BEGIN(BAUD_RATE);
 
   btStop();
 
-  if(WiFi.status() == WL_CONNECTED)
+  if(!rtc.begin())
   {
-    mqttClient.begin(MQTT_SERVER, MQTT_PORT, wifiClient);
-    mqttClient.setTimeout(MQTT_TIMEOUT);
-    mqttClient.onMessage(callback);
-    mqttClient.connect(MQTT_ID);
+    log("Couldn't init RTC");
+    status.rtcAvailable = false;
+    status.problemOccured = true;
+  }
+
+  if(status.rtcAvailable && rtc.lostPower())
+  {
+    setupWifi();
+
+    if(WiFi.status() == WL_CONNECTED)
+    {
+      struct tm timeStr;
+
+      configTime(GMT_OFFSET_SEC, DAYLIGHT_OFFSET_SEC, NTP_SERVER);
+      getLocalTime(&timeStr);
+
+      RTCSetTimeOnline(timeStr);
+    }
   }
 
   adc_power_acquire();
@@ -103,6 +120,12 @@ void setup()
     if(!card.begin(SD_CS))
     {
       log("Unable to init SD card");
+      status.cardAvailable = false;
+      status.problemOccured = true;
+    }
+    else if(cardPrepare())
+    {
+      log("Unable to create folder");
       status.cardAvailable = false;
       status.problemOccured = true;
     }
@@ -145,24 +168,6 @@ void setup()
     if(!bme.setGasHeater(320, 150))
       goto bmeError;
   }
-  
-
-  if(!rtc.begin())
-  {
-    log("Couldn't init RTC");
-    status.rtcAvailable = false;
-    status.problemOccured = true;
-  }
-
-  if(rtc.lostPower() && WiFi.status() == WL_CONNECTED)
-  {
-    struct tm timeStr;
-
-    configTime(GMT_OFFSET_SEC, DAYLIGHT_OFFSET_SEC, NTP_SERVER);
-    getLocalTime(&timeStr);
-
-    RTCSetTimeOnline(timeStr);
-  }
 
   esp_sleep_enable_timer_wakeup(uS_TO_S_FACTOR * TIME_TO_SLEEP_DEFAULT);
 }
@@ -173,7 +178,7 @@ void setup()
 void loop() 
 {
   bool success = false;
-  DynamicJsonDocument eventDoc(512);
+  DynamicJsonDocument eventDoc(JSON_DOC_SIZE_MEASUREMENTS);
   measurements data;
 
   log("Main loop...");
@@ -184,8 +189,11 @@ void loop()
   if((offlineCounter + 1) < MEASUREMENTS_COUNTER && status.cardAvailable)
     goto backup;
 
-  setupWifi();
-  mqttClient.loop();
+  if(WiFi.status() != WL_CONNECTED)
+  {
+    setupWifi();
+    mqttClient.loop();
+  }
 
   if(WiFi.status() == WL_CONNECTED)
   {
@@ -215,6 +223,7 @@ void loop()
             if(!entry)
             {
               doc.clear();
+              entry.close();
               break;
             }
 
@@ -261,34 +270,38 @@ void loop()
   //sps30_stop_measurement();
   log("End of main loop...");
   DBG_FLUSH();
+  card.end();
   delay(5000);
   sleep(data.batteryLevel);
 }
 
 void setupWifi()
 {
-  DBG_PRINTLN(F("Connecting to WiFi..."));
-  esp_wifi_start();
-  WiFi.mode(WIFI_MODE_STA);
-  WiFi.setHostname(HOSTNAME);
-  WiFi.setAutoReconnect(true);
-  WiFi.begin(SSID, WIFI_PASSWD);
-  WiFi.waitForConnectResult();
-
   if(WiFi.status() != WL_CONNECTED)
   {
-    DBG_PRINTLN(F("Unable to connect to wifi"));
-  }
-  else
-  {
-    DBG_PRINTLN(F("Connected to WiFi."));
-    DBG_PRINT(F("IPv4 address: "));
-    DBG_PRINTLN(WiFi.localIP());
+    DBG_PRINTLN(F("Connecting to WiFi..."));
+    esp_wifi_start();
+    WiFi.mode(WIFI_MODE_STA);
+    WiFi.setHostname(HOSTNAME);
+    WiFi.setAutoReconnect(true);
+    WiFi.begin(SSID, WIFI_PASSWD);
+    WiFi.waitForConnectResult();
 
-    mqttClient.begin(MQTT_SERVER, MQTT_PORT, wifiClient);
-    mqttClient.setTimeout(MQTT_TIMEOUT);
-    mqttClient.onMessage(callback);
-    mqttClient.connect(MQTT_ID);
+    if(WiFi.status() != WL_CONNECTED)
+    {
+      DBG_PRINTLN(F("Unable to connect to wifi"));
+    }
+    else
+    {
+      DBG_PRINTLN(F("Connected to WiFi."));
+      DBG_PRINT(F("IPv4 address: "));
+      DBG_PRINTLN(WiFi.localIP());
+
+      mqttClient.begin(MQTT_SERVER, MQTT_PORT, wifiClient);
+      mqttClient.setTimeout(MQTT_TIMEOUT);
+      mqttClient.onMessage(callback);
+      mqttClient.connect(MQTT_ID);
+    }
   }
 }
 
@@ -308,10 +321,32 @@ void measure(measurements &data, RTC_DS3231 &rtc, Adafruit_BME680 &bme)
     data.humidity = NAN;
     data.altitude = NAN;
     data.pressure = NAN;
+    data.gasResistance = NAN;
+    data.gasResistance = 0;
   }
+
   data.batteryLevel = readBatteryLevel();
-  data.time = (status.rtcAvailable)? RTCGetString() : (char*)"";
-  sps30ReadNewData(data.spsData);
+  
+  if(status.rtcAvailable)
+    data.time = (status.rtcAvailable)? RTCGetString() : (char*)"";
+  else data.time = (char*)"";
+
+  if(status.spsAvailable)
+    sps30ReadNewData(data.spsData);
+    else
+    {
+      data.spsData.mc_10p0 = NAN;
+      data.spsData.mc_1p0 = NAN;
+      data.spsData.mc_2p5 = NAN;
+      data.spsData.mc_4p0 = NAN;
+      data.spsData.nc_0p5 = NAN;
+      data.spsData.nc_10p0 = NAN;
+      data.spsData.nc_1p0 = NAN;
+      data.spsData.nc_2p5 = NAN;
+      data.spsData.nc_4p0 = NAN;
+      data.spsData.typical_particle_size = NAN;
+    }
+    
 }
 
 double readBatteryLevel()
@@ -328,26 +363,26 @@ int setSleepTimer(float batteryLevel)
 
     return 0;
   }
-  else if(batteryLevel >= HIGH_LEVEL)
+  else if(batteryLevel >= UPPER_LEVEL)
   {
     log((char*)"Level sleep: 1");
-    esp_sleep_enable_timer_wakeup(uS_TO_S_FACTOR * TIME_TO_SLEEP_HIGH);
+    esp_sleep_enable_timer_wakeup(uS_TO_S_FACTOR * TIME_TO_SLEEP_ONE);
 
     return 1;
   }
-  else if(batteryLevel < HIGH_LEVEL && batteryLevel >= MEDIUM_LEVEL)
+  else if(batteryLevel < UPPER_LEVEL && batteryLevel >= LOWER_LEVEL)
   {
     log("Level sleep: 2");
-    esp_sleep_enable_timer_wakeup(uS_TO_S_FACTOR * TIME_TO_SLEEP_MEDIUM);
+    esp_sleep_enable_timer_wakeup(uS_TO_S_FACTOR * TIME_TO_SLEEP_TWO);
 
     return 2;
   }
-  else 
+  else
   {
     log("Level sleep: 3");
-    esp_sleep_enable_timer_wakeup(uS_TO_S_FACTOR * TIME_TO_SLEEP_LOW);
+    esp_sleep_enable_timer_wakeup(uS_TO_S_FACTOR * TIME_TO_SLEEP_THREE);
 
-    return 3;
+    return 2;
   }
 }
 
@@ -371,6 +406,7 @@ void sleep(float batteryLevel)
   adc_power_release();
   esp_wifi_stop();
   esp_bt_controller_disable();
+  sps30_stop_measurement();
 
   esp_deep_sleep_start();
 }
