@@ -14,7 +14,7 @@
  */
 struct measurements
 {
-  float humidity = NAN; /**< humidity Humidity level in % */
+  float humidity = NAN; /**< Humidity level in % */
   char* time; /**< Time in "yyyy-MM-dd HH:mm:ss" format*/
   float batteryLevel = NAN; /**< Battery level in % */
   float temperature = NAN; /**< Temperature  in °C */
