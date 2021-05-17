@@ -8,15 +8,17 @@
 /** Turns on or off debug logs in serial communication. */
 #define DEBUG 1 
 
+/** @cond */
 /************************************************
  *       Network and server communication
  ***********************************************/
+/** @endcond */
 
 /**< Wi-Fi SSID. */
-#define SSID ""
+#define SSID "Damian"
 
 /**< Wi-Fi password. */
-#define WIFI_PASSWD ""
+#define WIFI_PASSWD "Ahoj123123"
 
 /**< NTP server address. */
 #define NTP_SERVER "0.cz.pool.ntp.org"
@@ -28,7 +30,7 @@
 #define MQTT_NAME "esp32"
 
 /**< MQTT server IP address. */
-#define MQTT_SERVER ""
+#define MQTT_SERVER "192.168.0.38"
 
 /**< MQTT server port. */
 #define MQTT_PORT 1883 
@@ -54,14 +56,15 @@
 /**< Quality of service (QoS) for MQTT subscribe communication. */
 #define MQTT_SUB_QOS 1
 
-/**< Connection timeout */
+/**< Connection timeout. */
 #define MQTT_TIMEOUT 5000
 
 
-
+/** @cond */
 /************************************************
  *           Sleep mode, timings etc.
  ***********************************************/
+/** @endcond */
 
 /**< Holds amount of uS in second. */
 #define uS_TO_S_FACTOR (uint64_t)1000000
@@ -69,32 +72,30 @@
 /**< Default amount of seconds for station to sleep. */
 #define TIME_TO_SLEEP_DEFAULT (uint64_t)60
 
-/**< Amount of seconds for station to sleep when battery level is high. */
-#define TIME_TO_SLEEP_HIGH (uint64_t)60 
+/**< Amount of seconds for station to sleep when battery level is in level 1. */
+#define TIME_TO_SLEEP_ONE (uint64_t)60
 
-/**< Amount of seconds for station to sleep when battery level is medium. */
-#define TIME_TO_SLEEP_MEDIUM (uint64_t)1800
+/**< Amount of seconds for station to sleep when battery level is in level 2. */
+#define TIME_TO_SLEEP_TWO (uint64_t)300//300
 
-/**< Amount of seconds for station to sleep when battery level is low. */
-#define TIME_TO_SLEEP_LOW (uint64_t)3600
+/**< Amount of seconds for station to sleep when battery level is in level 3. */
+#define TIME_TO_SLEEP_THREE (uint64_t)600//600
 
-/**< Define high level of battery. */
-#define HIGH_LEVEL 70
+/**< Define upper level of battery. */
+#define UPPER_LEVEL 90
 
-/**< Define medium level of battery. */
-#define MEDIUM_LEVEL 40
-
-/**< Define low level of battery */
-#define LOW_LEVEL 20
+/**< Define middle level of battery. */
+#define LOWER_LEVEL 80
 
 
-
+/** @cond */
 /************************************************
  *     Module/sensor, and MCU configuration
  ***********************************************/
+/** @endcond */
 
-/**< Specifies how many measurments to take before uploading data. */
-#define MEASUREMENTS_COUNTER 2
+/**< Specifies how many measurments to make before uploading data. */
+#define MEASUREMENTS_COUNTER 1
 
 /**< Baud rate for serial communication. */
 #define BAUD_RATE 115200 
@@ -106,7 +107,7 @@
 #define SD_CS 5
 
 /**< JSON document buffer size in bytes for measured data. */
-#define JSON_DOC_SIZE_MEASUREMENTS 1024
+#define JSON_DOC_SIZE_MEASUREMENTS 512
 
 /**< JSON document buffer size in bytes for error report. */
 #define JSON_DOC_SIZE_STATUS 192
@@ -122,7 +123,7 @@
 
 /**
  * GMT offset in seconds.
- * Is used to set time from NTP server.
+ * Is used to set time from NTP seWho Will Save Us Nowrver.
  */
 #define GMT_OFFSET_SEC 3600
 
