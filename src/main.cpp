@@ -71,7 +71,7 @@ void backup(DynamicJsonDocument &doc);
 
 /**
  * Prepare MCU for sleep, set deep sleep interval according to battery level.
- * @param batteryLevel Battery level in %.
+ * @param batteryLevel Battery voltage level in %.
  */
 void sleep(float batteryLevel);
 
@@ -98,6 +98,7 @@ void setup()
 
   if(status.rtcAvailable && rtc.lostPower())
   {
+    log("RTC lost its time!");
     setupWifi();
 
     if(WiFi.status() == WL_CONNECTED)
@@ -146,7 +147,7 @@ void setup()
     status.spsAvailable = false;
     status.problemOccured = true;
   }
-  else sps30_start_measurement();//sps30_stop_measurement();
+  else sps30_start_measurement();
 
   if(!bme.begin())
   {
@@ -267,7 +268,6 @@ void loop()
 
   eventDoc.clear();
 
-  //sps30_stop_measurement();
   log("End of main loop...");
   DBG_FLUSH();
   card.end();
