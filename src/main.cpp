@@ -280,7 +280,6 @@ void setupWifi()
   if(WiFi.status() != WL_CONNECTED)
   {
     DBG_PRINTLN(F("Connecting to WiFi..."));
-    esp_wifi_start();
     WiFi.mode(WIFI_MODE_STA);
     WiFi.setHostname(HOSTNAME);
     WiFi.setAutoReconnect(true);
