@@ -321,7 +321,6 @@ void measure(measurements &data, RTC_DS3231 &rtc, Adafruit_BME680 &bme)
     data.humidity = NAN;
     data.altitude = NAN;
     data.pressure = NAN;
-    data.gasResistance = NAN;
     data.gasResistance = 0;
   }
 
